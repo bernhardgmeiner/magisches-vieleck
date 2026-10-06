@@ -1,0 +1,750 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Interaktive App zum magischen Vieleck der Wirtschaftspolitik: acht Ziele, Zielkonflikte, Regierung spielen, Selbsttest. GWB, GRG 15 Wien.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23212125'/%3E%3Cpolygon points='16,4 24.5,7.5 28,16 24.5,24.5 16,28 7.5,24.5 4,16 7.5,7.5' fill='none' stroke='%23FFD400' stroke-width='2.5'/%3E%3C/svg%3E">
+<title>Das magische Vieleck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+/* Layout: links das Vieleck als Bühne (SVG), rechts eine Erklärspalte; am Handy untereinander. Stil wie die re:publica-Folien: Graphit, Rot, gelber Textmarker. Version 2. */
+:root{
+  --bg:#212125; --panel:#2A2A2F; --line:#4A4A51; --grid:#6A6A72; --fg:#F2F0EA; --muted:#B4B1A9; --dim:#9A968E;
+  --red:#FF5A4E; --hl:#FFD400; --hl-ink:#212125; --hl-line:#FFD400; --focus:#FFD400; --harm:#FFD400;
+  --ok:#6CCB8F; --warn:#FFB547; --on-status:#212125;
+  --display:"Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, "Courier New", monospace;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: light){ :root:not([data-theme="dark"]){
+  --bg:#F4F2EC; --panel:#FFFFFF; --line:#D6D2C8; --grid:#A9A59C; --fg:#212125; --muted:#55534E; --dim:#6E6B66;
+  --red:#C2271C; --hl:#FFD400; --hl-ink:#212125; --hl-line:#8A6B00; --focus:#212125; --harm:#7A5F00;
+  --ok:#176B3A; --warn:#8F5500; --on-status:#FFFFFF; color-scheme:light } }
+:root[data-theme="light"]{
+  --bg:#F4F2EC; --panel:#FFFFFF; --line:#D6D2C8; --grid:#A9A59C; --fg:#212125; --muted:#55534E; --dim:#6E6B66;
+  --red:#C2271C; --hl:#FFD400; --hl-ink:#212125; --hl-line:#8A6B00; --focus:#212125; --harm:#7A5F00;
+  --ok:#176B3A; --warn:#8F5500; --on-status:#FFFFFF; color-scheme:light }
+:root[data-theme="dark"]{
+  --bg:#212125; --panel:#2A2A2F; --line:#4A4A51; --grid:#6A6A72; --fg:#F2F0EA; --muted:#B4B1A9; --dim:#9A968E;
+  --red:#FF5A4E; --hl:#FFD400; --hl-ink:#212125; --hl-line:#FFD400; --focus:#FFD400; --harm:#FFD400;
+  --ok:#6CCB8F; --warn:#FFB547; --on-status:#212125; color-scheme:dark }
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font-family:var(--mono);font-size:clamp(15px,0.9vw + 8px,19px);line-height:1.5;margin:0}
+.wrap{max-width:1500px;margin:0 auto;padding-inline:clamp(16px,3vw,48px);padding-block:14px 40px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:10px 24px;border-left:1px solid var(--line);padding-left:18px;margin-bottom:10px}
+.eyebrow{font-size:.78em;letter-spacing:.14em;text-transform:uppercase;color:var(--red);font-weight:600;margin:0}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(28px,2.8vw,48px);line-height:1.05;margin:.1em 0 0;text-wrap:balance}
+mark{background:var(--hl);color:var(--hl-ink);padding:0 .12em}
+.sub{color:var(--muted);margin:.35em 0 0;font-size:.8em}
+.tools{display:flex;gap:8px;flex-wrap:wrap}
+button{font:inherit;color:inherit;cursor:pointer}
+.btn{background:transparent;border:1px solid var(--line);border-radius:999px;padding:.35em .95em;font-size:.82em;color:var(--muted);min-height:36px}
+.btn:hover{border-color:var(--fg);color:var(--fg)}
+.btn[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+
+nav.tabs{display:flex;gap:4px;flex-wrap:wrap;margin:0 0 12px;border-bottom:1px solid var(--line)}
+nav.tabs button{background:none;border:0;border-bottom:3px solid transparent;padding:.5em .9em;font-family:var(--display);font-weight:700;font-size:1.02em;color:var(--muted);margin-bottom:-1px;min-height:44px}
+nav.tabs button[aria-selected="true"]{color:var(--fg);border-bottom-color:var(--red)}
+
+
+.stage{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:clamp(16px,2.5vw,40px);align-items:start}
+@media (max-width:900px){.stage{grid-template-columns:1fr}}
+.svgbox{min-width:0}
+.svgbox svg{width:100%;height:auto;display:block;max-height:max(320px,calc(100vh - 320px))}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:clamp(16px,1.8vw,26px);min-width:0}
+@media (min-width:901px){ #p-ziele .panel, #p-zeit .panel{max-height:calc(100vh - 200px);overflow:auto} }
+.panel h2{font-family:var(--display);font-size:1.6em;line-height:1.15;margin:.1em 0 .4em;text-wrap:balance}
+.panel h2:focus{outline:none}
+.panel h3{font-size:.78em;letter-spacing:.12em;text-transform:uppercase;color:var(--red);margin:1.2em 0 .35em}
+.panel p{margin:.3em 0 .6em}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 10px}
+.chip{border:1px solid var(--line);background:transparent;border-radius:999px;padding:.3em .85em;font-size:.82em;color:var(--muted);display:inline-flex;align-items:center;gap:.5em;min-height:36px}
+.chip[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.chip .sym{font-weight:700}
+.sep{width:1px;background:var(--line);margin:4px 4px}
+.sw{display:inline-block;width:22px;height:0;border-top:3px solid currentColor;vertical-align:middle}
+.sw.k{color:var(--red)} .sw.h{color:var(--harm)} .sw.a{color:var(--muted);border-top-style:dashed} .sw.n{color:var(--dim);border-top:4px dotted}
+.big{font-family:var(--display);font-weight:700;font-size:2.6em;line-height:1}
+.status{display:inline-block;font-size:.75em;letter-spacing:.08em;text-transform:uppercase;padding:.15em .6em;border-radius:3px;font-weight:600;vertical-align:middle;color:var(--on-status)}
+.st-gut{background:var(--ok)} .st-mittel{background:var(--warn)} .st-kritisch{background:var(--red)}
+.crit{font-size:.85em;color:var(--muted)}
+.src{font-size:.78em;color:var(--dim)} .src a{color:var(--muted)}
+.rel-list{list-style:none;padding:0;margin:0;display:grid;gap:6px}
+.rel-list button{width:100%;text-align:left;background:transparent;border:1px solid var(--line);border-radius:4px;padding:.5em .7em;display:flex;gap:.7em;align-items:center;font-size:.88em;min-height:44px}
+.rel-list button:hover{border-color:var(--fg)}
+.legend{list-style:none;padding:0;margin:.8em 0;display:grid;gap:8px}
+.legend li{display:flex;gap:.8em;align-items:baseline;font-size:.9em}
+.tag{font-size:.78em;letter-spacing:.08em;text-transform:uppercase;font-weight:600;white-space:nowrap}
+.tag.k{color:var(--red)} .tag.h{color:var(--harm)} .tag.a{color:var(--muted)} .tag.n{color:var(--dim)} .tag.z{color:var(--muted)}
+.example{border-left:3px solid var(--hl);padding:.2em 0 .2em .8em;margin:.8em 0;color:var(--fg)}
+.note{font-size:.82em;color:var(--dim);margin-top:10px}
+.back{margin:0 0 .6em}
+details.more{margin:.8em 0;border-top:1px solid var(--line);padding-top:.6em}
+details.more summary{cursor:pointer;color:var(--muted);font-size:.85em;min-height:36px;display:flex;align-items:center}
+details.more[open] summary{margin-bottom:.4em}
+.valrow{display:flex;flex-wrap:wrap;align-items:baseline;gap:.4em 1em}
+.guess{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:.8em 0}
+.guess button,.answers button{border:2px solid var(--line);background:transparent;border-radius:6px;padding:.7em;font-weight:600;min-height:48px;text-align:center}
+.guess button:hover,.answers button:hover:not(:disabled){border-color:var(--fg)}
+.answers button.right{border-color:var(--ok);color:var(--fg)} .answers button.right::before{content:"✓ ";color:var(--ok)}
+.answers button.wrong{border-color:var(--red)} .answers button.wrong::before{content:"✗ ";color:var(--red)}
+.answers button:disabled{cursor:default}
+.answers button:disabled:not(.right):not(.wrong){opacity:.55}
+.amp-legend{display:flex;flex-wrap:wrap;gap:14px;font-size:.85em;color:var(--muted);margin:6px 0 0;padding-left:4px}
+.amp-legend b{display:inline-grid;place-items:center;width:1.6em;height:1.6em;border-radius:50%;color:var(--on-status);margin-right:.35em;font-family:var(--display)}
+
+/* SVG */
+.edge{stroke-linecap:round}
+.edge.k{stroke:var(--red)} .edge.h{stroke:var(--harm)} .edge.a{stroke:var(--muted);stroke-dasharray:8 7} .edge.n{stroke:var(--dim);stroke-dasharray:0.1 11;stroke-width:6!important}
+.edge.hidden-type{stroke:var(--grid);stroke-dasharray:4 7}
+.hit{stroke:transparent;stroke-width:26;cursor:pointer;fill:none}
+.badge{cursor:pointer}
+.badge circle{fill:var(--panel);stroke-width:2.5}
+.badge text{font-family:var(--display);font-weight:700;font-size:17px;text-anchor:middle}
+.badge.k circle{stroke:var(--red)} .badge.k text{fill:var(--red)}
+.badge.h circle{stroke:var(--harm)} .badge.h text{fill:var(--harm)}
+.badge.a circle{stroke:var(--muted)} .badge.a text{fill:var(--muted)}
+.badge.n circle{stroke:var(--dim)} .badge.n text{fill:var(--dim)}
+.badge.q circle{stroke:var(--grid)} .badge.q text{fill:var(--muted)}
+.edgeg.dimmed{opacity:.12}
+.node{cursor:pointer}
+.node .c{fill:var(--panel);stroke:var(--fg);stroke-width:2.5}
+.node .nhit{fill:transparent}
+.node text{fill:var(--fg);font-family:var(--display);font-weight:700;font-size:21px}
+.node .sym{font-size:24px;fill:var(--on-status)}
+.node.amp-gut .c{fill:var(--ok)} .node.amp-mittel .c{fill:var(--warn)} .node.amp-kritisch .c{fill:var(--red)}
+.node.sel .c{stroke:var(--hl-line);stroke-width:8}
+.node.sel:not([class*="amp-"]) .c{fill:var(--hl)}
+.node:focus{outline:none} .node:focus-visible .c{stroke:var(--focus);stroke-width:7}
+.node.dimmed{opacity:.2}
+.outline{fill:none;stroke:var(--grid);stroke-width:2.5}
+.ring{fill:none;stroke:var(--grid);stroke-width:1.5}
+.ring0{fill:none;stroke:var(--muted);stroke-width:2.5;stroke-dasharray:6 6}
+.axis{stroke:var(--grid);stroke-width:1.5}
+.lbl{fill:var(--fg);font-family:var(--display);font-weight:700;font-size:20px}
+.lbl-s{fill:var(--muted);font-family:var(--mono);font-size:16px}
+.shape{fill:var(--hl);fill-opacity:.22;stroke:var(--hl-line);stroke-width:3.5}
+.dot-neg{fill:var(--red)} .dot-pos{fill:var(--hl-line)} .dot-0{fill:var(--muted)}
+.tl-poly{fill:var(--hl);fill-opacity:.16;stroke:var(--hl-line);stroke-width:3.5}
+
+/* Regierung spielen */
+.mission{border-left:3px solid var(--red);padding:.3em 0 .3em .9em;margin:0 0 12px;max-width:80ch}
+.spiel{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(16px,2.5vw,36px);align-items:start}
+.spiel-left{display:grid;gap:14px;min-width:0}
+.spiel-right{position:sticky;top:env(safe-area-inset-top,0px);display:grid;gap:12px;min-width:0}
+.measures{display:grid;gap:8px}
+.mcard{text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:.55em .8em;display:flex;justify-content:space-between;align-items:center;gap:.8em;min-width:0;min-height:48px}
+.mcard b{font-family:var(--display);font-size:1em;line-height:1.2}
+.mcard span{font-size:.72em;color:var(--muted);text-align:right}
+.mcard[aria-pressed="true"]{border-color:var(--hl-line);box-shadow:inset 0 0 0 2px var(--hl-line)}
+.msg{min-height:1.4em;color:var(--red);font-size:.85em;margin:0}
+.verdict{font-family:var(--display);font-weight:700;font-size:1.25em;line-height:1.25;margin:0}
+#radar{max-height:calc(100vh - 330px)}
+.bars{display:grid;gap:7px;margin:.4em 0}
+.bar{display:grid;grid-template-columns:max-content minmax(60px,1fr) 2.6em;gap:10px;align-items:center;font-size:.85em}
+.bar .track{position:relative;height:12px;background:var(--line);border-radius:2px}
+.bar .track::after{content:"";position:absolute;left:50%;top:-3px;bottom:-3px;width:2px;background:var(--muted)}
+.bar .fill{position:absolute;top:0;bottom:0;transition:left .35s ease,right .35s ease,width .35s ease}
+.bar .v{text-align:right;font-variant-numeric:tabular-nums}
+textarea{width:100%;min-height:5.5em;font:inherit;font-size:.9em;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:.6em}
+@media (max-width:900px){
+  .spiel{grid-template-columns:1fr}
+  .spiel-right{order:-1;top:0;z-index:2;background:var(--bg);padding-block:6px;border-bottom:1px solid var(--line)}
+  #radar{max-height:34vh}
+  .spiel-right .verdict{font-size:1em}
+}
+
+/* Zeitachse */
+.steps{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+
+/* Selbsttest */
+.quiz{max-width:900px}
+.qcard{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:clamp(16px,2vw,28px)}
+.pair{font-family:var(--display);font-weight:700;font-size:clamp(22px,2.2vw,36px);line-height:1.15;margin:.2em 0 .6em;text-wrap:balance}
+.pair:focus{outline:none}
+.pair em{font-style:normal;color:var(--red)}
+.answers{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+.progress{color:var(--muted);font-size:.85em}
+.feedtitle{font-size:.78em;letter-spacing:.12em;text-transform:uppercase;margin:1.2em 0 .35em;font-weight:600}
+.feedtitle.ok{color:var(--ok)} .feedtitle.no{color:var(--red)}
+
+/* Handy */
+@media (max-width:640px){
+  .node text{font-size:30px} .node .sym{font-size:30px}
+  #radar .lbl{font-size:30px} #tl .lbl{font-size:26px}
+  .hit{stroke-width:60}
+  .badge text{font-size:24px}
+}
+
+/* Beamer-Modus */
+:root[data-mode="beamer"] body{font-size:clamp(19px,1.35vw,28px)}
+:root[data-mode="beamer"] .wrap{max-width:none}
+:root[data-mode="beamer"] .sub, :root[data-mode="beamer"] .src, :root[data-mode="beamer"] .note{display:none}
+:root[data-mode="beamer"] h1{font-size:clamp(26px,2.2vw,40px)}
+:root[data-mode="beamer"] .edge{stroke-width:6}
+:root[data-mode="beamer"] .svgbox svg{max-height:max(320px,calc(100vh - 190px))}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div>
+      <p class="eyebrow">GWB 7A · Wirtschaftspolitik</p>
+      <h1>Das <mark>magische</mark> Vieleck</h1>
+      <p class="sub">Acht Ziele, die sich nicht alle gleichzeitig erreichen lassen. Zahlen zu Österreich: Stand 6. Oktober 2026.</p>
+    </div>
+    <div class="tools">
+      <button class="btn" id="beamerBtn" type="button" aria-pressed="false">Beamer-Modus</button>
+      <button class="btn" id="themeBtn" type="button">Hell / Dunkel</button>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Bereiche">
+    <button role="tab" id="tab-ziele" aria-selected="true" aria-controls="p-ziele" type="button">Die 8 Ziele</button>
+    <button role="tab" id="tab-zeit" aria-selected="false" aria-controls="p-zeit" type="button" tabindex="-1">Vom 3-Eck zum 8-Eck</button>
+    <button role="tab" id="tab-spiel" aria-selected="false" aria-controls="p-spiel" type="button" tabindex="-1">Regierung spielen</button>
+    <button role="tab" id="tab-test" aria-selected="false" aria-controls="p-test" type="button" tabindex="-1">Selbsttest</button>
+  </nav>
+
+
+  <p id="live" class="sr-only" aria-live="polite"></p>
+
+  <!-- 1 Die 8 Ziele -->
+  <section id="p-ziele" role="tabpanel" aria-labelledby="tab-ziele">
+    <div class="chips" id="filters">
+      <button class="chip" data-f="k" aria-pressed="false" type="button"><span class="sw k"></span>Zielkonflikt <span class="sym">−</span></button>
+      <button class="chip" data-f="h" aria-pressed="false" type="button"><span class="sw h"></span>Zielharmonie <span class="sym">+</span></button>
+      <button class="chip" data-f="a" aria-pressed="false" type="button"><span class="sw a"></span>Kommt drauf an <span class="sym">?</span></button>
+      <button class="chip" data-f="n" aria-pressed="false" type="button"><span class="sw n"></span>Neutral <span class="sym">0</span></button>
+      <span class="sep" aria-hidden="true"></span>
+      <button class="chip" id="ampBtn" aria-pressed="false" type="button">Österreich-Ampel</button>
+      <button class="chip" id="guessBtn" aria-pressed="false" type="button">Ratemodus</button>
+    </div>
+    <div class="stage">
+      <div class="svgbox">
+        <svg id="octo" viewBox="-60 15 920 660" role="group" aria-label="Das magische Achteck: acht Ziele und ihre Beziehungen. Ziele mit Tab-Taste erreichbar."></svg>
+        <div class="amp-legend" id="ampLegend" hidden>
+          <span><b style="background:var(--ok)">✓</b>grün</span>
+          <span><b style="background:var(--warn)">!</b>gelb</span>
+          <span><b style="background:var(--red)">✕</b>rot</span>
+          <span>Maßstab steht bei jedem Ziel</span>
+        </div>
+      </div>
+      <aside class="panel" id="info"></aside>
+    </div>
+  </section>
+
+  <!-- 2 Zeitachse -->
+  <section id="p-zeit" role="tabpanel" aria-labelledby="tab-zeit" hidden>
+    <div class="steps chips" id="steps"></div>
+    <div class="stage">
+      <div class="svgbox"><svg id="tl" viewBox="-150 0 1100 680" role="img" aria-label="Das Vieleck wächst über die Jahrzehnte"></svg></div>
+      <aside class="panel" id="tlInfo"></aside>
+    </div>
+  </section>
+
+  <!-- 3 Regierung spielen -->
+  <section id="p-spiel" role="tabpanel" aria-labelledby="tab-spiel" hidden>
+    <p class="mission"><b>Lage im Herbst 2026:</b> Inflation 3,6 %, Arbeitslosigkeit 7,1 %, das Defizit liegt über der EU-Grenze von 3 %. Wählt als Regierung bis zu drei Maßnahmen und schaut, wie sich das Vieleck verformt.</p>
+    <div class="spiel">
+      <div class="spiel-left">
+        <div class="measures" id="measures"></div>
+        <p class="msg" id="msg" role="status"></p>
+        <div class="panel" id="spielDetails"></div>
+      </div>
+      <div class="spiel-right">
+        <svg id="radar" viewBox="-60 0 920 680" role="img" aria-label="Netzdiagramm: Wirkung des Pakets auf die acht Ziele" aria-describedby="spielDetails"></svg>
+        <p class="verdict" id="verdict"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 Selbsttest -->
+  <section id="p-test" role="tabpanel" aria-labelledby="tab-test" hidden>
+    <div class="quiz"><div class="qcard" id="quiz"></div></div>
+  </section>
+</div>
+
+<script>
+document.documentElement.lang="de";
+/* ---------- Daten (Stand 6.10.2026) ---------- */
+const G = [
+ {id:"voll", short:"Vollbeschäftigung", name:"Vollbeschäftigung",
+  what:"Alle, die arbeiten wollen und können, finden auch Arbeit. Null Prozent Arbeitslosigkeit gibt es trotzdem nie: Menschen wechseln den Job, machen Ausbildungen oder ziehen um.",
+  measure:"Arbeitslosenquote nach nationaler Definition (AMS). Nach EU-Definition (Eurostat) fällt sie deutlich niedriger aus, weil anders gezählt wird.",
+  value:"7,1 %", when:"Ende September 2026", extra:"0,1 Prozentpunkte mehr als vor einem Jahr, rund 307.000 Menschen waren arbeitslos gemeldet. Das WIFO erwartete im Juni für 2026 im Schnitt 7,5 %. Die nächste Prognose kommt am 14. Oktober.",
+  status:"kritisch", crit:"Die Quote steigt im Vergleich zum Vorjahr, und das WIFO erwartet einen weiteren Anstieg. Einen offiziellen Grenzwert gibt es nicht.",
+  src:[["AMS: Arbeitsmarktdaten Österreich (abgerufen 6.10.2026)","https://www.ams.at/content/dam/download/arbeitsmarktdaten/%C3%B6sterreich/berichte-auswertungen/001_uebersicht_aktuell.pdf"],["WIFO-Prognose Juni 2026","https://www.wifo.ac.at/wp-content/uploads/upload-5233/Konjunkturprognose_Presse-Statement_Felbermayr_2026-06-25.pdf"]]},
+ {id:"preis", short:"Preisstabilität", name:"Preisstabilität",
+  what:"Die Preise steigen nur langsam. Dann bleibt euer Geld (Taschengeld, Erspartes) ungefähr gleich viel wert. Die Europäische Zentralbank (EZB) peilt für den ganzen Euroraum mittelfristig 2 % an.",
+  measure:"Inflationsrate laut Verbraucherpreisindex (Statistik Austria). Die EZB rechnet mit dem harmonisierten Index (HVPI), der lag im September bei 3,5 %.",
+  value:"3,6 %", when:"September 2026 (Schnellschätzung)", extra:"Teurer wurden vor allem Treibstoff und Heizöl. Im August lag die Rate bei 3,2 %. Der endgültige Wert erscheint am 16. Oktober.",
+  status:"kritisch", crit:"EZB-Ziel 2 %. Liegt die Inflation mehr als 1 Prozentpunkt darüber, ist das Feld rot.",
+  src:[["Statistik Austria: Schnellschätzung September 2026","https://www.statistik.at/fileadmin/announcement/2026/10/20261002VPIFlashEstimateSeptember2026.pdf"]]},
+ {id:"wachs", short:"Wachstum", name:"Angemessenes Wirtschaftswachstum",
+  what:"Die Wirtschaft soll wachsen, damit Jobs und Einkommen entstehen. „Angemessen“ heißt: nicht zu schwach, aber auch nicht so stark, dass sie überhitzt und die Preise davonlaufen.",
+  measure:"Reales BIP-Wachstum (Preissteigerungen herausgerechnet)",
+  value:"+0,7 %", when:"2025", extra:"Für 2026 erwartete das WIFO im Juni +0,9 %. Das sei „alles andere als stürmisch, aber angesichts des Krisengeschehens passabel“, sagte WIFO-Chef Gabriel Felbermayr.",
+  status:"mittel", crit:"Das Wachstum ist positiv, aber unter 1 %. Das gilt als schwach, deshalb gelb.",
+  src:[["Statistik Austria: BIP 2025 (30.9.2026)","https://www.statistik.at/fileadmin/announcement/2026/09/20260930BIP2025.pdf"],["WIFO-Prognose Juni 2026","https://www.wifo.ac.at/wp-content/uploads/upload-5233/Konjunkturprognose_Presse-Statement_Felbermayr_2026-06-25.pdf"]]},
+ {id:"oeko", short:"Ökologie", name:"Ökologisches Gleichgewicht",
+  what:"Wirtschaften, ohne die Lebensgrundlagen zu zerstören: weniger Treibhausgase, weniger Rohstoffverbrauch, saubere Luft und sauberes Wasser.",
+  measure:"Treibhausgasemissionen (Umweltbundesamt, vorläufige Schätzung)",
+  value:"67,1 Mio. t", when:"CO₂-Äquivalente, 2025", extra:"0,7 % mehr als 2024. Für die EU-Klimaziele 2030 braucht es laut Umweltbundesamt „zusätzliche, rasch wirksame Maßnahmen“.",
+  status:"kritisch", crit:"Die Emissionen steigen, und laut Umweltbundesamt reichen die bisherigen Maßnahmen für die EU-Ziele 2030 nicht.",
+  src:[["Umweltbundesamt: Treibhausgas-Emissionen 2025","https://www.umweltbundesamt.at/news260902-treibhausgas-emissionen-2025"]]},
+ {id:"schuld", short:"Staatsschulden", name:"Einschränkung der Staatsverschuldung",
+  what:"Die Schulden des Staates sollen im Verhältnis zur Wirtschaftsleistung nicht immer weiter steigen. Für Schulden zahlt der Staat Zinsen, und dieses Geld fehlt dann zum Beispiel für Schulen oder Spitäler. Andere betonen: Schulden für Investitionen können sich lohnen, wenn sie künftiges Wachstum bringen. Wie viel zu viel ist, ist umstritten.",
+  measure:"Schuldenquote (Staatsschulden in % des BIP)",
+  value:"80,7 %", when:"2025 (revidiert am 30.9.2026)", extra:"Das sind 418,4 Mrd. Euro. Der Referenzwert der EU (Maastricht-Kriterien) liegt bei 60 %.",
+  status:"kritisch", crit:"EU-Referenzwert 60 % des BIP. Österreich liegt deutlich darüber.",
+  src:[["Statistik Austria: Schuldenstand (30.9.2026)","https://www.statistik.at/fileadmin/announcement/2026/09/20260930SchuldenstandQ22026.pdf"]]},
+ {id:"aussen", short:"Zahlungsbilanz", name:"Ausgeglichene Zahlungsbilanz",
+  what:"Ein Land soll mit dem Ausland ungefähr im Gleichgewicht sein: nicht dauerhaft viel mehr kaufen als verkaufen, sonst verschuldet es sich im Ausland. Aber auch nicht riesige Überschüsse auf Kosten anderer. Euer Schulbuch nennt das auch außenwirtschaftliches Gleichgewicht.",
+  measure:"Leistungsbilanz in % des BIP. Sie ist der wichtigste Teil der Zahlungsbilanz (Waren, Dienstleistungen, Einkommen). Die Zahlungsbilanz als Ganzes ist rechnerisch immer ausgeglichen.",
+  value:"rund +1,9 %", when:"2025", extra:"9,5 Mrd. Euro Überschuss. Ein wichtiger Grund dafür ist laut Nationalbank der Tourismus.",
+  status:"gut", crit:"Ein leichter Überschuss gilt als unproblematisch. Die EU schaut genauer hin, wenn der Saldo im Dreijahresschnitt über +6 % oder unter −4 % liegt.",
+  src:[["OeNB-Report 2026/18: Außenwirtschaft","https://www.oenb.at/dam/jcr:ba315f44-c54b-4fea-a2a1-bb3f297d146b/report-2026-18-aussenwirtschaft.pdf"]]},
+ {id:"vert", short:"Verteilung", name:"Sozial gerechte Einkommensverteilung",
+  what:"Der Wohlstand soll nicht nur bei wenigen landen. Was als „gerecht“ gilt, ist allerdings eine Wertfrage: Darüber streiten Parteien und Sozialpartner.",
+  measure:"Zum Beispiel: Armutsgefährdungsquote (EU-SILC). Armutsgefährdet ist, wer weniger als 60 % des mittleren Einkommens hat.",
+  value:"16,0 %", when:"2025", extra:"16 % der Menschen in Österreich (1,45 Mio.) sind armutsgefährdet, 2024 waren es 14,3 %. Die Einkommen der unteren Gruppen stiegen weniger stark als die der mittleren.",
+  status:"kritisch", crit:"Die Armutsgefährdung ist gegenüber dem Vorjahr deutlich gestiegen. Wie viel Ungleichheit „gerecht“ ist, bleibt eine Wertfrage.",
+  src:[["Statistik Austria: Armut und Lebensbedingungen 2025","https://www.statistik.at/fileadmin/announcement/2026/04/20260429Armut2025.pdf"]]},
+ {id:"budget", short:"Budget", name:"Ausgeglichenes Budget",
+  what:"Der Staat soll in einem Jahr nicht viel mehr ausgeben, als er einnimmt. Jedes Defizit bezahlt er mit neuen Schulden.",
+  measure:"Budgetsaldo (Defizit in % des BIP)",
+  value:"−4,1 %", when:"2025 (revidiert am 30.9.2026)", extra:"21,4 Mrd. Euro Defizit. Erlaubt sind nach EU-Regeln höchstens 3 %. Deshalb läuft seit Juli 2025 ein EU-Defizitverfahren, Österreich hat bis 2028 Zeit, das zu korrigieren.",
+  status:"kritisch", crit:"EU-Grenze 3 % Defizit. Österreich liegt darüber.",
+  src:[["Statistik Austria: Öffentliches Defizit","https://www.statistik.at/statistiken/volkswirtschaft-und-oeffentliche-finanzen/oeffentliche-finanzen/maastricht-indikatoren/oeffentliches-defizit/oeffentlicher-ueberschuss"],["Rat der EU: Beschluss zum Defizitverfahren (8.7.2025)","https://data.consilium.europa.eu/doc/document/ST-10348-2025-INIT/en/pdf"]]}
+];
+const GI = Object.fromEntries(G.map((g,i)=>[g.id,i]));
+const TYPE = {k:"Zielkonflikt", h:"Zielharmonie", a:"Kommt drauf an", n:"Neutral"};
+const SYM = {k:"−", h:"+", a:"?", n:"0"};
+
+const R = [
+ {a:"wachs",b:"voll",t:"h",text:"Wächst die Wirtschaft, verkaufen Betriebe mehr und brauchen mehr Leute. Euer Schulbuch nennt dieses Paar als Beispiel für Zielharmonie (S. 21).",ex:"Aufschwung: Ein Möbelhersteller bekommt mehr Aufträge und stellt drei Tischler:innen ein."},
+ {a:"voll",b:"preis",t:"k",text:"Haben fast alle Arbeit, steigt die Nachfrage, und Betriebe werben mit höheren Löhnen um Arbeitskräfte. Beides treibt die Preise. Das ist das Beispiel für einen Zielkonflikt in eurem Schulbuch (S. 21). Ein Naturgesetz ist es aber nicht: Steigen die Energiepreise stark, kann es hohe Inflation und hohe Arbeitslosigkeit gleichzeitig geben (Stagflation, etwa in den 1970er-Jahren).",ex:"Kellner:innen sind knapp, der Wirt zahlt mehr Lohn und hebt den Schnitzelpreis an."},
+ {a:"wachs",b:"preis",t:"k",text:"Wächst die Nachfrage schneller, als Betriebe liefern können, steigen die Preise. Umgekehrt bremst die EZB die Inflation mit höheren Zinsen, und das dämpft auch das Wachstum.",ex:"Die EZB erhöht die Zinsen: Kredite für Häuser und Maschinen werden teurer, es wird weniger gebaut und investiert."},
+ {a:"wachs",b:"oeko",t:"k",text:"Mehr Produktion heißt meist mehr Energie und mehr Abgase. Davor hat der Club of Rome 1972 gewarnt („Die Grenzen des Wachstums“). Befürworter:innen von „grünem Wachstum“ verweisen auf Länder, in denen das BIP wächst und die Emissionen trotzdem sinken. Kritiker:innen sagen, das geht viel zu langsam.",ex:"Die voestalpine baut in Linz und Donawitz Elektrolichtbogenöfen statt Hochöfen. Das kostet viel Geld und soll Millionen Tonnen CO₂ sparen. Konflikt oder Lösung?"},
+ {a:"budget",b:"schuld",t:"h",text:"Das Defizit ist das Loch in einem Jahr, die Schulden sind die Summe aller Löcher. Macht der Staat kein Defizit, muss er sich kein Geld leihen. Diese Harmonie ergibt sich fast schon aus der Definition.",ex:"Gibt der Staat genauso viel aus, wie er einnimmt, bleibt der Schuldenberg in Euro gleich groß. Wächst das BIP, sinkt die Quote sogar."},
+ {a:"wachs",b:"budget",t:"h",text:"Wächst die Wirtschaft, nimmt der Staat mehr Steuern ein und muss weniger für Arbeitslose ausgeben. So lässt sich das Budget leichter ausgleichen.",ex:"Mehr Umsatz bringt mehr Umsatzsteuer, mehr Jobs bringen mehr Lohnsteuer."},
+ {a:"voll",b:"budget",t:"a",text:"Arbeiten viele, zahlen sie Steuern und Beiträge und brauchen kein Arbeitslosengeld. Das hilft dem Budget. Will der Staat in einer Krise Jobs retten, kostet das aber Milliarden.",ex:"Bundeskanzler Bruno Kreisky sagte in den 1970er-Jahren sinngemäß: Ein paar Milliarden Schilling mehr Schulden sind ihm lieber als ein paar hunderttausend Arbeitslose. In der Corona-Zeit gab der Staat über 9 Mrd. Euro für Kurzarbeit aus."},
+ {a:"vert",b:"budget",t:"k",text:"Mehr Sozialleistungen kosten Geld. Wird über Steuern umverteilt, also über die Einnahmen, muss das Budget nicht leiden. Wen ein Sparpaket trifft, hängt davon ab, wo gekürzt wird: bei Sozialleistungen eher Menschen mit wenig Einkommen, bei Förderungen oder Steuerausnahmen eher andere.",ex:"Eine höhere Mindestpension hilft armutsgefährdeten Pensionist:innen und belastet das Budget."},
+ {a:"vert",b:"voll",t:"h",text:"Ein Job schützt meist gut vor Armut. Je mehr Menschen Arbeit haben, desto weniger rutschen ganz nach unten. Aber auch manche Erwerbstätige sind armutsgefährdet („working poor“).",ex:"Eine alleinerziehende Mutter findet nach langer Suche Arbeit und ist nicht mehr armutsgefährdet."},
+ {a:"preis",b:"vert",t:"h",text:"Inflation trifft Menschen mit wenig Geld am stärksten: Sie geben fast alles für Miete, Essen und Energie aus und haben kaum Erspartes als Polster. Stabile Preise schützen also gerade Menschen mit wenig Geld.",ex:"Steigt der Heizölpreis, spürt das ein Haushalt mit wenig Einkommen viel stärker als einer mit hohem Einkommen."},
+ {a:"preis",b:"oeko",t:"n",text:"Laut eurem Schulbuch beeinflussen sich diese beiden Ziele nicht: Preisstabilität wirkt sich nicht auf die Umwelt aus (S. 21). Achtung, Unterschied: Einzelne Maßnahmen können trotzdem beide Ziele treffen. Eine CO₂-Steuer schützt das Klima und macht Benzin teurer. Probiert das im Tab „Regierung spielen“ aus.",ex:"Diskutiert: Hängen die Ziele selbst zusammen oder nur die Maßnahmen?"},
+ {a:"wachs",b:"aussen",t:"a",text:"Wächst Österreich vor allem durch Exporte, steigt der Überschuss in der Leistungsbilanz. Wächst es vor allem, weil die Leute mehr kaufen, steigen oft auch die Importe, und der Überschuss sinkt.",ex:"Mehr Autos aus Graz für Deutschland: Der Überschuss steigt. Mehr Handys aus China für Österreich: Der Überschuss sinkt."},
+ {a:"preis",b:"aussen",t:"h",text:"Steigen die Preise in Österreich langsamer als anderswo, bleiben Waren und Urlaub aus Österreich für Kund:innen im Ausland leistbar. Das stützt die Exporte.",ex:"Ist ein Skiurlaub in Tirol nicht viel teurer geworden, kommen die Gäste aus den Niederlanden wieder."},
+ {a:"oeko",b:"voll",t:"a",text:"Klimaschutz kann Jobs in alten Branchen kosten und neue schaffen. Ob unterm Strich mehr oder weniger Arbeit entsteht, hängt davon ab, wie man den Umbau gestaltet.",ex:"Weniger Jobs bei Zulieferern für Verbrennungsmotoren, mehr Jobs bei Solar-Monteur:innen und Wärmepumpen-Installateur:innen."},
+ {a:"oeko",b:"budget",t:"a",text:"Klimaschutz kann den Staat Geld kosten (Förderungen) oder Geld bringen (CO₂-Steuer), je nachdem, welches Werkzeug er wählt.",ex:"Förderung für den Heizungstausch: Ausgabe. CO₂-Preis auf Benzin und Diesel: Einnahme."},
+ {a:"vert",b:"wachs",t:"a",text:"Gewerkschaften und Arbeiterkammer sagen: Umverteilung gibt Menschen mit wenig Geld mehr zum Ausgeben, das stützt die Wirtschaft und den Zusammenhalt. Wirtschaftskammer und Industriellenvereinigung sagen: Hohe Steuern auf Einkommen und Vermögen schwächen den Anreiz zu arbeiten und zu investieren. Wie stark beide Effekte sind, ist unter Ökonom:innen umstritten.",ex:"Vermögensteuer: Was spricht dafür, was dagegen? Sammelt Argumente beider Seiten."},
+ {a:"schuld",b:"wachs",t:"a",text:"Kurzfristig bremst ein Sparpaket das Wachstum, weil der Staat weniger ausgibt. Langfristig fressen hohe Schulden über die Zinsen Milliarden, die dann für Investitionen fehlen. Und Wachstum senkt die Schuldenquote, weil das BIP größer wird.",ex:"Gleich viele Schulden, aber ein größeres BIP: Die Quote in Prozent sinkt."},
+ {a:"oeko",b:"vert",t:"a",text:"Ein höherer CO₂-Preis trifft Pendler:innen am Land und Menschen mit wenig Einkommen oft stärker. Ob das ungerecht wird, hängt davon ab, ob der Staat das Geld zurückgibt.",ex:"Österreich hat dafür 2022 den Klimabonus eingeführt, eine Auszahlung an alle. 2025 wurde er abgeschafft, um das Budget zu entlasten. Kritiker:innen fanden ihn zu wenig treffsicher („Gießkanne“), Befürworter:innen sahen ihn als fairen Ausgleich."},
+ {a:"voll",b:"aussen",t:"a",text:"Haben mehr Menschen Arbeit, kaufen sie mehr, auch Waren aus dem Ausland. Ein Land mit Überschuss kommt so näher an den Ausgleich, ein Land mit Defizit rutscht tiefer hinein.",ex:"Mehr Jobs in Wien, mehr verkaufte Handys und Autos aus dem Ausland: Die Importe steigen."},
+ {a:"preis",b:"schuld",t:"a",text:"Inflation lässt das BIP in Euro wachsen, die Schuldenquote sinkt deshalb kurzfristig. Dann erhöht die EZB aber die Zinsen, und neue Schulden werden teurer. Hier wird der Unterschied zwischen nominal und real wichtig.",ex:"Steigen alle Preise um 4 %, wächst auch das nominale BIP. Die alten Schulden bleiben in Euro gleich und wiegen relativ weniger."}
+];
+
+const M = [
+ {id:"m1", name:"Steuern für Unternehmen senken", who:"angebotsorientiert", kind:"A", fx:{wachs:1,voll:1,aussen:1,budget:-2,schuld:-1,vert:-1}},
+ {id:"m2", name:"Sozialleistungen und Pensionen erhöhen", who:"nachfrageorientiert", kind:"N", fx:{vert:2,voll:1,preis:-1,budget:-2,schuld:-1}},
+ {id:"m3", name:"Investitionspaket: Bahn, Schulen, Glasfaser", who:"nachfrageorientiert", kind:"N", fx:{wachs:2,voll:2,oeko:1,preis:-1,budget:-2,schuld:-2}},
+ {id:"m4", name:"CO₂-Steuer erhöhen", who:"Umweltpolitik", kind:"", fx:{oeko:2,budget:1,schuld:1,aussen:1,preis:-1,wachs:-1,vert:-1}},
+ {id:"m7", name:"Klimabonus an alle auszahlen", who:"Ausgleich", kind:"", fx:{vert:1,budget:-1,schuld:-1}},
+ {id:"m5", name:"Sparpaket (z. B. bei Sozialleistungen)", who:"Budgetpolitik", kind:"", fx:{budget:2,schuld:2,preis:1,wachs:-1,voll:-1,vert:-1}},
+ {id:"m8", name:"Exportförderung für Betriebe", who:"Außenwirtschaft", kind:"", fx:{aussen:1,wachs:1,voll:1,oeko:-1,budget:-1,schuld:-1}},
+ {id:"m6", name:"Leitzinsen erhöhen", who:"EZB (nicht die Regierung)", kind:"", fx:{preis:2,wachs:-1,voll:-1,schuld:-1,budget:-1}}
+];
+const MAXM=3;
+
+/* ---------- Helfer ---------- */
+const $ = s => document.querySelector(s);
+const NS = "http://www.w3.org/2000/svg";
+function el(tag, attrs={}, parent){ const e=document.createElementNS(NS,tag); for(const k in attrs) e.setAttribute(k,attrs[k]); if(parent) parent.appendChild(e); return e; }
+function esc(s){ return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+function pt(i,n,r,cx,cy){ const a=-Math.PI/2 + i*2*Math.PI/n; return [cx+r*Math.cos(a), cy+r*Math.sin(a)]; }
+function anchorFor(x,cx){ return Math.abs(x-cx)<20 ? "middle" : (x<cx ? "end" : "start"); }
+function statusTxt(s){ return {gut:"grün",mittel:"gelb",kritisch:"rot"}[s]; }
+function statusSym(s){ return {gut:"✓",mittel:"!",kritisch:"✕"}[s]; }
+function srcHtml(g){ return '<p class="src">Quelle: '+g.src.map(s=>'<a href="'+s[1]+'" target="_blank" rel="noopener">'+esc(s[0])+'</a>').join(' · ')+'</p>'; }
+function say(t){ const l=$("#live"); l.textContent=""; setTimeout(()=>{ l.textContent=t; },30); }
+function focusHeading(box){ const h=box.querySelector("h2,.pair"); if(h){ h.setAttribute("tabindex","-1"); h.focus({preventScroll:false}); } }
+function wrapText(parent, txt, x, y, anchor, cls, max){
+  let lines=[txt];
+  if(txt.length>max){ const mid=txt.length/2; let best=-1; for(let i=0;i<txt.length;i++){ if(txt[i]===" " && (best<0 || Math.abs(i-mid)<Math.abs(best-mid))) best=i; } if(best>0) lines=[txt.slice(0,best), txt.slice(best+1)]; }
+  const t=el("text",{x, y: y+7-(lines.length-1)*11, "text-anchor":anchor, class:cls},parent);
+  lines.forEach((l,i)=>{ const ts=el("tspan",{x, dy: i?23:0},t); ts.textContent=l; });
+  return t;
+}
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/* ---------- Theme & Beamer ---------- */
+const root=document.documentElement;
+$("#themeBtn").addEventListener("click",()=>{
+  const cur=root.getAttribute("data-theme");
+  const isDark = cur==="dark" || (cur!=="light" && !matchMedia("(prefers-color-scheme: light)").matches);
+  root.setAttribute("data-theme", isDark ? "light" : "dark");
+  try{ localStorage.setItem("vieleck-theme", root.getAttribute("data-theme")); }catch(e){}
+});
+try{ const t=localStorage.getItem("vieleck-theme"); if(t==="light"||t==="dark") root.setAttribute("data-theme",t); }catch(e){}
+$("#beamerBtn").addEventListener("click",()=>{
+  const on = root.getAttribute("data-mode")!=="beamer";
+  if(on){ root.setAttribute("data-mode","beamer"); try{ const p=root.requestFullscreen&&root.requestFullscreen(); if(p&&p.catch) p.catch(()=>{}); }catch(e){} }
+  else { root.removeAttribute("data-mode"); try{ if(document.fullscreenElement){ const p=document.exitFullscreen(); if(p&&p.catch) p.catch(()=>{}); } }catch(e){} }
+  $("#beamerBtn").setAttribute("aria-pressed",on);
+});
+
+/* ---------- Tabs ---------- */
+const tabs=[...document.querySelectorAll('[role="tab"]')];
+const HASH={"tab-ziele":"ziele","tab-zeit":"zeit","tab-spiel":"spiel","tab-test":"test"};
+let curTab="tab-ziele";
+function showTab(id, focus){
+  curTab=id;
+  tabs.forEach(t=>{ const on=t.id===id; t.setAttribute("aria-selected",on); t.tabIndex=on?0:-1; document.getElementById(t.getAttribute("aria-controls")).hidden=!on; });
+  if(focus) document.getElementById(id).focus();
+  try{ localStorage.setItem("vieleck-tab", id); }catch(e){}
+  try{ history.replaceState(null,"","#"+HASH[id]); }catch(e){}
+}
+tabs.forEach((t,i)=>{
+  t.addEventListener("click",()=>showTab(t.id));
+  t.addEventListener("keydown",e=>{
+    let j=null;
+    if(e.key==="ArrowRight") j=(i+1)%tabs.length; else if(e.key==="ArrowLeft") j=(i-1+tabs.length)%tabs.length;
+    else if(e.key==="Home") j=0; else if(e.key==="End") j=tabs.length-1;
+    if(j!==null){ e.preventDefault(); showTab(tabs[j].id,true); }
+  });
+});
+
+/* ---------- 1: Achteck ---------- */
+const CX=400, CY=345, RAD=245;
+const octo=$("#octo");
+const nodePos=G.map((g,i)=>pt(i,8,RAD,CX,CY));
+let filter="none", selGoal=null, selRel=null, fromGoal=null, amp=false, guessMode=false;
+const revealed=new Set(); let guessResult={};
+
+const bgRect=el("rect",{x:-60,y:15,width:920,height:660,fill:"transparent"},octo);
+bgRect.addEventListener("click",()=>{ if(selGoal!=null||selRel!=null||filter!=="none"){ resetOcto(); } });
+el("polygon",{points:nodePos.map(p=>p.join(",")).join(" "),class:"outline"},octo);
+function resetOcto(focus){ selGoal=null; selRel=null; fromGoal=null; filter="none"; syncFilters(); renderOcto(focus); }
+const gEdges=el("g",{},octo), gBadges=el("g",{},octo), gNodes=el("g",{},octo);
+const placed=[];
+const edgeEls=R.map((r,idx)=>{
+  const [x1,y1]=nodePos[GI[r.a]], [x2,y2]=nodePos[GI[r.b]];
+  const g=el("g",{class:"edgeg"},gEdges);
+  const line=el("line",{x1,y1,x2,y2,class:"edge "+r.t,"stroke-width":4},g);
+  const hit=el("line",{x1,y1,x2,y2,class:"hit"},g);
+  let bx,by;
+  for(const t of [0.5,0.38,0.62,0.3,0.7,0.45,0.55]){ bx=x1+(x2-x1)*t; by=y1+(y2-y1)*t; if(!placed.some(([px,py])=>Math.hypot(px-bx,py-by)<34)) break; }
+  placed.push([bx,by]);
+  const bg=el("g",{class:"badge "+r.t},gBadges);
+  el("circle",{cx:bx,cy:by,r:12},bg); const bt=el("text",{x:bx,y:by+6},bg); bt.textContent=SYM[r.t];
+  const title=el("title",{},hit); const title2=el("title",{},bg);
+  const pick=()=>{ if(selGoal!=null) fromGoal=selGoal; selRel=idx; selGoal=null; renderOcto(true); };
+  hit.addEventListener("click",pick); bg.addEventListener("click",pick);
+  return {g,line,bg,bt,r,title,title2};
+});
+const nodeEls=G.map((g,i)=>{
+  const [x,y]=nodePos[i];
+  const grp=el("g",{class:"node",tabindex:"0",role:"button","aria-label":g.name,"aria-pressed":"false"},gNodes);
+  el("circle",{cx:x,cy:y,r:48,class:"nhit"},grp);
+  el("circle",{cx:x,cy:y,r:30,class:"c"},grp);
+  const sym=el("text",{x,y:y+9,"text-anchor":"middle",class:"sym"},grp);
+  const [lx,ly]=pt(i,8,RAD+50,CX,CY);
+  const lab=el("text",{x:lx,y:ly+7,"text-anchor":anchorFor(lx,CX)},grp); lab.textContent=g.short;
+  const act=()=>{ selGoal = selGoal===i ? null : i; selRel=null; fromGoal=null; filter="none"; syncFilters(); renderOcto(); };
+  grp.addEventListener("click",act);
+  grp.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); act(); }});
+  return {grp,sym};
+});
+function syncFilters(){ document.querySelectorAll("#filters .chip[data-f]").forEach(x=>x.setAttribute("aria-pressed",x.dataset.f===filter)); }
+document.querySelectorAll("#filters .chip[data-f]").forEach(b=>b.addEventListener("click",()=>{
+  filter = filter===b.dataset.f ? "none" : b.dataset.f; syncFilters();
+  selGoal=null; selRel=null; fromGoal=null;
+  renderOcto();
+}));
+$("#ampBtn").addEventListener("click",()=>{ amp=!amp; $("#ampBtn").setAttribute("aria-pressed",amp); $("#ampLegend").hidden=!amp; renderOcto(); say(amp?"Österreich-Ampel eingeschaltet":"Österreich-Ampel ausgeschaltet"); });
+$("#guessBtn").addEventListener("click",()=>{ guessMode=!guessMode; $("#guessBtn").setAttribute("aria-pressed",guessMode); if(guessMode){ revealed.clear(); guessResult={}; } selRel=null; selGoal=null; fromGoal=null; renderOcto(); say(guessMode?"Ratemodus: Alle Linien sind verdeckt.":"Ratemodus aus"); });
+document.addEventListener("keydown",e=>{ if(e.key==="Escape" && curTab==="tab-ziele" && (selGoal!=null||selRel!=null||filter!=="none")){ resetOcto(true); } });
+
+function shown(idx){ return !guessMode || revealed.has(idx); }
+function relLine(r,idx,fromIdx){
+  const other = G[GI[r.a]===fromIdx ? GI[r.b] : GI[r.a]].short;
+  const t = shown(idx) ? r.t : "z";
+  const lbl = shown(idx) ? TYPE[r.t] : "Verdeckt";
+  return '<li><button type="button" data-rel="'+idx+'"><span class="tag '+t+'">'+lbl+'</span><span>'+esc(other)+'</span></button></li>';
+}
+function bindPanel(){
+  const box=$("#info");
+  box.querySelectorAll("[data-rel]").forEach(b=>b.addEventListener("click",()=>{ if(selGoal!=null) fromGoal=selGoal; selRel=+b.dataset.rel; selGoal=null; renderOcto(true); }));
+  box.querySelectorAll("[data-goal]").forEach(b=>b.addEventListener("click",()=>{ selGoal=+b.dataset.goal; selRel=null; fromGoal=null; renderOcto(true); }));
+  box.querySelectorAll("[data-back]").forEach(b=>b.addEventListener("click",()=>{ if(selRel!=null && fromGoal!=null){ selGoal=fromGoal; selRel=null; fromGoal=null; renderOcto(true); } else resetOcto(true); }));
+  box.querySelectorAll("[data-guess]").forEach(b=>b.addEventListener("click",()=>{
+    const r=R[selRel]; guessResult[selRel]=b.dataset.guess; revealed.add(selRel);
+    say(b.dataset.guess===r.t ? "Richtig: "+TYPE[r.t] : "Nicht ganz. Richtig ist: "+TYPE[r.t]);
+    renderOcto(true);
+  }));
+}
+function renderOcto(moveFocus){
+  edgeEls.forEach(({g,line,bg,bt,r,title,title2},idx)=>{
+    let vis;
+    if(selRel!=null) vis = idx===selRel;
+    else if(selGoal!=null) vis = GI[r.a]===selGoal || GI[r.b]===selGoal;
+    else vis = filter!=="none" && filter===r.t;
+    g.style.display = vis ? "" : "none"; bg.style.display = vis ? "" : "none";
+    const s=shown(idx);
+    line.setAttribute("class","edge "+(s?r.t:"hidden-type"));
+    bg.setAttribute("class","badge "+(s?r.t:"q"));
+    bt.textContent = s ? SYM[r.t] : "?";
+    const tt=G[GI[r.a]].short+" ↔ "+G[GI[r.b]].short+": "+(s?TYPE[r.t]:"verdeckt");
+    title.textContent=tt; title2.textContent=tt;
+  });
+  nodeEls.forEach(({grp,sym},i)=>{
+    grp.setAttribute("class","node"+(amp?" amp-"+G[i].status:"")+((selGoal===i)?" sel":""));
+    sym.textContent = amp ? statusSym(G[i].status) : "";
+    grp.setAttribute("aria-label", G[i].name + (amp ? ", Ampel "+statusTxt(G[i].status) : ""));
+    grp.setAttribute("aria-pressed", selGoal===i);
+    let dim=false;
+    if(selRel!=null){ const r=R[selRel]; dim = !(GI[r.a]===i||GI[r.b]===i); }
+    grp.classList.toggle("dimmed",dim);
+  });
+  const box=$("#info");
+  const back='<p class="back"><button class="btn" type="button" data-back>'+(selRel!=null && fromGoal!=null ? '← zurück zu '+esc(G[fromGoal].short) : '← Übersicht')+'</button></p>';
+  if(selGoal!=null){
+    const g=G[selGoal];
+    const rels=R.map((r,idx)=>[r,idx]).filter(([r])=>GI[r.a]===selGoal||GI[r.b]===selGoal);
+    box.innerHTML=back+'<p class="eyebrow">Ziel</p><h2>'+esc(g.name)+'</h2><p>'+esc(g.what)+'</p>'+
+      '<h3>Österreich jetzt</h3><div class="valrow"><span class="big">'+esc(g.value)+'</span>'+(amp?'<span class="status st-'+g.status+'">'+statusSym(g.status)+' '+statusTxt(g.status)+'</span>':'')+'</div><p class="src" style="margin-top:.3em">'+esc(g.when)+'</p>'+
+      '<p>'+esc(g.extra)+'</p>'+
+      '<h3>Verbindungen zu anderen Zielen</h3><ul class="rel-list">'+rels.map(([r,idx])=>relLine(r,idx,selGoal)).join("")+'</ul>'+
+      '<details class="more"><summary>Woher kommt die Zahl, und warum diese Ampelfarbe?</summary><p class="crit"><b>Gemessen an:</b> '+esc(g.measure)+'</p><p class="crit"><b>Ampel '+statusTxt(g.status)+':</b> '+esc(g.crit)+' Keine amtliche Bewertung, mit anderen Maßstäben sähe die Ampel anders aus.</p>'+srcHtml(g)+'</details>';
+  } else if(selRel!=null){
+    const r=R[selRel], A=G[GI[r.a]], B=G[GI[r.b]];
+    if(!shown(selRel)){
+      box.innerHTML=back+'<p class="eyebrow">Ratemodus</p><h2>'+esc(A.short)+' ↔ '+esc(B.short)+'</h2><p>Was vermutet ihr? Wie hängen diese beiden Ziele zusammen?</p>'+
+        '<div class="guess">'+["k","h","a","n"].map(t=>'<button type="button" data-guess="'+t+'">'+TYPE[t]+' '+SYM[t]+'</button>').join("")+'</div>';
+    } else {
+      const gr=guessResult[selRel];
+      const fb = gr ? '<p class="feedtitle '+(gr===r.t?'ok':'no')+'">'+(gr===r.t?'✓ Richtig vermutet':'✗ Vermutet: '+TYPE[gr])+'</p>' : '';
+      box.innerHTML=back+fb+'<p class="eyebrow"><span class="tag '+r.t+'">'+TYPE[r.t]+' '+SYM[r.t]+'</span></p><h2>'+esc(A.short)+' ↔ '+esc(B.short)+'</h2><p>'+esc(r.text)+'</p>'+
+        '<div class="example"><b>Beispiel:</b> '+esc(r.ex)+'</div>'+
+        '<h3>Die beiden Ziele</h3><ul class="rel-list"><li><button type="button" data-goal="'+GI[r.a]+'"><span class="tag z">Ziel</span><span>'+esc(A.name)+'</span></button></li><li><button type="button" data-goal="'+GI[r.b]+'"><span class="tag z">Ziel</span><span>'+esc(B.name)+'</span></button></li></ul>';
+    }
+  } else {
+    const counts={k:0,h:0,a:0,n:0}; R.forEach(r=>counts[r.t]++);
+    const krit=G.filter(g=>g.status==="kritisch").length;
+    const gm = guessMode ? '<p class="feedtitle ok">Ratemodus: '+revealed.size+' von '+R.length+' Verbindungen aufgedeckt, '+Object.keys(guessResult).filter(k=>guessResult[k]===R[k].t).length+' richtig vermutet. Wählt ein Ziel, dann eine Verbindung.</p>' : '';
+    const shownType = filter!=="none" ? '<p class="feedtitle ok">Eingeblendet: alle Verbindungen vom Typ „'+TYPE[filter]+'“ ('+counts[filter]+'). Klickt auf eine Linie.</p>' : '';
+    box.innerHTML=gm+shownType+'<p class="eyebrow">So funktioniert’s</p><h2>Klickt auf ein Ziel</h2>'+
+      '<p>Jede Ecke ist ein Ziel der Wirtschaftspolitik. Klickt ihr eines an, erscheinen seine Verbindungen zu den anderen Zielen. Oben könnt ihr auch eine Art von Verbindung für alle Ziele einblenden.</p>'+
+      '<ul class="legend">'+
+      '<li><span class="tag k">Zielkonflikt −</span><span>Wer das eine fördert, schadet dem anderen ('+counts.k+')</span></li>'+
+      '<li><span class="tag h">Zielharmonie +</span><span>Beide Ziele helfen einander ('+counts.h+')</span></li>'+
+      '<li><span class="tag a">Kommt drauf an ?</span><span>Je nach Maßnahme Konflikt oder Harmonie ('+counts.a+')</span></li>'+
+      '<li><span class="tag n">Neutral 0</span><span>Beeinflussen sich nicht ('+counts.n+')</span></li></ul>'+
+      '<p><b>Magisch</b> heißt das Vieleck, weil man nicht alle Ziele gleichzeitig erreichen kann. Mit der <b>Österreich-Ampel</b> seht ihr: Nach den angegebenen Maßstäben sind derzeit '+krit+' von 8 Zielen rot. Mit anderen Maßstäben sähe die Ampel anders aus.</p>'+
+      '<p class="note">Die App zeigt die wichtigsten '+R.length+' Verbindungen, nicht alle 28 möglichen Paare.</p>';
+  }
+  bindPanel();
+  if(moveFocus) focusHeading(box);
+}
+renderOcto();
+
+/* ---------- 2: Zeitachse ---------- */
+const TL=[
+ {label:"1950er", n:"3-Eck", ids:["voll","wachs","preis"], names:{wachs:"Wirtschaftswachstum"},
+  text:"Nach dem Zweiten Weltkrieg geht es um den Wiederaufbau: Arbeit für alle, Wachstum und stabile Preise. Das sind die drei klassischen Ziele."},
+ {label:"1960er", n:"4-Eck", ids:["preis","wachs","aussen","voll"], names:{wachs:"Wirtschaftswachstum",aussen:"Außenwirtschaftliches Gleichgewicht"},
+  text:"Der Handel mit dem Ausland wird immer wichtiger. Neu ist das außenwirtschaftliche Gleichgewicht. In Deutschland schreibt das Stabilitätsgesetz 1967 diese vier Ziele fest, das „magische Viereck“."},
+ {label:"1970er", n:"5-Eck", ids:["voll","aussen","vert","preis","wachs"], names:{wachs:"Wirtschaftswachstum",aussen:"Außenwirtschaftliches Gleichgewicht",vert:"Gerechte Einkommensverteilung"},
+  text:"Der Wohlstand ist gewachsen, aber wer bekommt wie viel davon? Neu dazu kommt die gerechte Einkommensverteilung. 1972 erscheint außerdem der Bericht „Die Grenzen des Wachstums“ des Club of Rome."},
+ {label:"1980er/90er", n:"6-Eck", ids:["wachs","voll","budget","vert","preis","aussen"], names:{wachs:"Angemessenes Wirtschaftswachstum",aussen:"Außenwirtschaftliches Gleichgewicht",vert:"Verteilungsgerechtigkeit",budget:"Konjunkturgerechte Budgetgestaltung"},
+  text:"Staaten haben in Krisen viel Geld ausgegeben. Jetzt rückt das Budget ins Vieleck: Der Staat soll in schlechten Zeiten ausgeben und in guten Zeiten sparen („konjunkturgerecht“). Im Schulbuch heißt es ab hier „angemessenes“ Wachstum."},
+ {label:"ab 2000", n:"8-Eck", ids:["voll","preis","wachs","oeko","schuld","aussen","vert","budget"], names:{},
+  text:"Zwei neue Ziele: ökologisches Gleichgewicht (Klimawandel, Ressourcen) und die Einschränkung der Staatsverschuldung. Mit dem Maastricht-Vertrag von 1992 gelten in der EU feste Grenzen für die Staatsfinanzen: höchstens 3 % Defizit und 60 % Schuldenquote."}
+];
+function tlName(s,id){ return s.names[id] || G[GI[id]].name; }
+const tl=$("#tl"); const TC=[400,330], TR=215;
+const tlPoly=el("polygon",{class:"tl-poly"},tl);
+const tlLabels=el("g",{},tl);
+let tlStep=4;
+const stepBox=$("#steps");
+TL.forEach((s,i)=>{ const b=document.createElement("button"); b.type="button"; b.className="chip"; b.textContent=s.label+" · "+s.n; b.addEventListener("click",()=>{ tlStep=i; renderTL(); }); stepBox.appendChild(b); });
+function renderTL(keepFocusId){
+  const s=TL[tlStep], n=s.ids.length;
+  [...stepBox.children].forEach((b,i)=>b.setAttribute("aria-pressed",i===tlStep));
+  tlPoly.setAttribute("points",s.ids.map((id,i)=>pt(i,n,TR,TC[0],TC[1]).join(",")).join(" "));
+  tlLabels.innerHTML="";
+  s.ids.forEach((id,i)=>{
+    const [x,y]=pt(i,n,TR,TC[0],TC[1]); el("circle",{cx:x,cy:y,r:9,style:"fill:var(--hl-line)"},tlLabels);
+    const [lx,ly]=pt(i,n,TR+34,TC[0],TC[1]);
+    wrapText(tlLabels, tlName(s,id), lx, ly, anchorFor(lx,TC[0]), "lbl", 16);
+  });
+  const big=el("text",{x:TC[0],y:TC[1]+14,"text-anchor":"middle",class:"lbl"},tlLabels); big.setAttribute("style","font-size:44px"); big.textContent=s.n;
+  const prevS = tlStep>0 ? TL[tlStep-1] : null;
+  const neu = prevS ? s.ids.filter(id=>!prevS.ids.includes(id)) : [];
+  const ren = prevS ? s.ids.filter(id=>prevS.ids.includes(id) && tlName(prevS,id)!==tlName(s,id)) : [];
+  $("#tlInfo").innerHTML='<p class="eyebrow">'+esc(s.label)+'</p><h2>Das '+esc(s.n)+'</h2><p>'+esc(s.text)+'</p>'+
+    (neu.length?'<h3>Neu dazugekommen</h3><p>'+neu.map(id=>'<mark>'+esc(tlName(s,id))+'</mark>').join(" ")+'</p>':'')+
+    (ren.length?'<h3>Umbenannt</h3><ul style="margin:.2em 0;padding-left:1.2em">'+ren.map(id=>'<li>'+esc(tlName(prevS,id))+' → '+esc(tlName(s,id))+'</li>').join("")+'</ul>':'')+
+    '<p class="note">Einteilung nach eurem Schulbuch (S. 21, Abb. 21.2). Je nach politischer Position wird das Vieleck als 3-, 4-, 5-, 6- oder 8-Eck gezeichnet. In anderen Büchern besteht das Dreieck aus Vollbeschäftigung, Preisstabilität und außenwirtschaftlichem Gleichgewicht.</p>'+
+    '<p><button class="btn" type="button" id="tlPrev"'+(tlStep===0?' disabled':'')+'>← früher</button> <button class="btn" type="button" id="tlNext"'+(tlStep===TL.length-1?' disabled':'')+'>später →</button></p>';
+  const p=$("#tlPrev"), nx=$("#tlNext");
+  p.addEventListener("click",()=>{ if(tlStep>0){tlStep--; renderTL("tlPrev");} });
+  nx.addEventListener("click",()=>{ if(tlStep<TL.length-1){tlStep++; renderTL("tlNext");} });
+  if(keepFocusId){ const f=document.getElementById(keepFocusId); (f && !f.disabled ? f : (keepFocusId==="tlPrev"?nx:p)).focus(); say("Das "+s.n+", "+s.label); }
+}
+renderTL();
+
+/* ---------- 3: Regierung spielen ---------- */
+const radar=$("#radar"); const RC=[400,330], RR=240, STEPS=3;
+const chosen=new Set(); const tried=new Set();
+function rFor(v){ const c=Math.max(-STEPS,Math.min(STEPS,v)); return RR*(0.5 + c/(2*STEPS)*0.92); }
+const radarLabels=[];
+(function drawRadarBase(){
+  for(let s=-STEPS;s<=STEPS;s++){
+    const pts=G.map((g,i)=>pt(i,8,rFor(s),RC[0],RC[1]).join(",")).join(" ");
+    el("polygon",{points:pts,class:s===0?"ring0":"ring"},radar);
+  }
+  G.forEach((g,i)=>{
+    const [x,y]=pt(i,8,RR*0.96,RC[0],RC[1]); el("line",{x1:RC[0],y1:RC[1],x2:x,y2:y,class:"axis"},radar);
+    const [lx,ly]=pt(i,8,RR+42,RC[0],RC[1]);
+    const t=el("text",{x:lx,y:ly+7,"text-anchor":anchorFor(lx,RC[0]),class:"lbl"},radar); t.textContent=g.short; radarLabels.push(t);
+  });
+  const [hx,hy]=pt(0,8,rFor(0),RC[0],RC[1]);
+  const lab0=el("text",{x:hx-14,y:hy-12,"text-anchor":"end",class:"lbl-s"},radar); lab0.textContent="heute";
+  const lab3=el("text",{x:RC[0]+14,y:RC[1]-rFor(STEPS)+4,class:"lbl-s"},radar); lab3.textContent="+3";
+})();
+const shape=el("polygon",{class:"shape"},radar);
+const dots=G.map(()=>el("circle",{r:10,class:"dot-0"},radar));
+let curVals=G.map(()=>0), animId=null;
+function drawShape(vals){
+  shape.setAttribute("points",G.map((g,i)=>pt(i,8,rFor(vals[i]),RC[0],RC[1]).join(",")).join(" "));
+  G.forEach((g,i)=>{ const [x,y]=pt(i,8,rFor(vals[i]),RC[0],RC[1]); dots[i].setAttribute("cx",x); dots[i].setAttribute("cy",y); });
+}
+function animateTo(target){
+  const from=curVals.slice(); if(animId) cancelAnimationFrame(animId);
+  if(reduceMotion){ curVals=target.slice(); drawShape(curVals); return; }
+  const t0=performance.now(), D=380;
+  const step=now=>{ const k=Math.min(1,(now-t0)/D), e=1-Math.pow(1-k,3);
+    curVals=from.map((v,i)=>v+(target[i]-v)*e); drawShape(curVals);
+    if(k<1) animId=requestAnimationFrame(step); else animId=null; };
+  animId=requestAnimationFrame(step);
+}
+drawShape(curVals);
+
+
+const mbox=$("#measures");
+M.forEach(m=>{
+  const b=document.createElement("button"); b.type="button"; b.className="mcard"; b.setAttribute("aria-pressed","false"); b.id="btn-"+m.id;
+  b.innerHTML='<b>'+esc(m.name)+'</b><span>'+esc(m.who)+'</span>';
+  b.addEventListener("click",()=>{
+    if(chosen.has(m.id)){ chosen.delete(m.id); $("#msg").textContent=""; }
+    else if(chosen.size>=MAXM){ $("#msg").textContent="Höchstens drei Maßnahmen pro Paket. Nehmt zuerst eine heraus."; return; }
+    else { chosen.add(m.id); $("#msg").textContent=""; }
+    b.setAttribute("aria-pressed",chosen.has(m.id));
+    if(chosen.size) tried.add([...chosen].sort().join("+"));
+    renderSpiel(true);
+  });
+  mbox.appendChild(b);
+});
+function totals(){ const t=Object.fromEntries(G.map(g=>[g.id,0])); M.filter(m=>chosen.has(m.id)).forEach(m=>{ for(const k in m.fx) t[k]+=m.fx[k]; }); return t; }
+function renderSpiel(announce){
+  const t=totals(); const vals=G.map(g=>t[g.id]);
+  animateTo(vals);
+  G.forEach((g,i)=>dots[i].setAttribute("class",vals[i]<0?"dot-neg":vals[i]>0?"dot-pos":"dot-0"));
+  const up=G.filter(g=>t[g.id]>0), down=G.filter(g=>t[g.id]<0);
+  const kinds=new Set(M.filter(m=>chosen.has(m.id)).map(m=>m.kind).filter(Boolean));
+  let verdict;
+  if(chosen.size===0) verdict="Noch keine Maßnahme gewählt.";
+  else verdict=up.length+" Ziel"+(up.length===1?"":"e")+" besser, "+down.length+" schlechter.";
+  $("#verdict").textContent=verdict;
+  if(announce) say(verdict);
+  let more="";
+  if(chosen.size>0 && tried.size>=3){ more="<p>Das ist das Magische: Jede Maßnahme hat einen Preis. In diesem Spiel gibt es <b>kein</b> Paket, bei dem alle Ziele gleich bleiben oder besser werden. Das gilt für alle 92 möglichen Pakete aus bis zu drei Maßnahmen.</p>"; }
+  if(kinds.has("A")&&kinds.has("N")) more+='<p>Ihr kombiniert angebots- und nachfrageorientierte Maßnahmen. Das nennt euer Schulbuch <b lang="en">mixed policy</b> (gemischte Wirtschaftspolitik).</p>';
+  if(chosen.has("m6")) more+="<p>Achtung: Die Leitzinsen bestimmt die <b>Europäische Zentralbank</b> für den ganzen Euroraum. Die österreichische Regierung kann sie nicht ändern.</p>";
+  const bars=G.map(g=>{ const v=t[g.id], c=Math.max(-STEPS,Math.min(STEPS,v)), w=Math.abs(c)/STEPS*50;
+    const style = v>=0 ? "left:50%;width:"+w+"%;background:var(--hl-line)" : "right:50%;width:"+w+"%;background:var(--red)";
+    return '<div class="bar"><span class="nm">'+esc(g.short)+'</span><span class="track"><span class="fill" style="'+style+'"></span></span><span class="v">'+(v>0?"+":"")+v+'</span></div>'; }).join("");
+  const d=$("#spielDetails");
+  d.innerHTML='<p class="eyebrow">Bilanz eurer Regierung</p><p class="verdict">'+verdict+'</p><div class="bars">'+bars+'</div>'+more+
+    (chosen.size?'<p><button class="btn" type="button" id="resetBtn">Auswahl zurücksetzen</button></p>':'')+
+    '<p class="note">Vereinfachtes Modell: Jede Maßnahme verschiebt ein Ziel um höchstens 2 Punkte, die Grafik endet bei ±3. Wie stark eine Maßnahme wirklich wirkt, hängt etwa davon ab, wie gut die Wirtschaft gerade läuft.</p>';
+  const rb=$("#resetBtn"); if(rb) rb.addEventListener("click",()=>{ chosen.clear(); $("#msg").textContent=""; document.querySelectorAll(".mcard").forEach(b=>b.setAttribute("aria-pressed","false")); renderSpiel(true); $("#btn-m1").focus(); });
+}
+renderSpiel();
+
+/* ---------- 4: Selbsttest ---------- */
+function pairQ(idx){ const r=R[idx]; return {type:"pair", q:G[GI[r.a]].name+' <em>↔</em> '+G[GI[r.b]].name, opts:["k","h","a","n"].map(t=>[t,TYPE[t]]), correct:r.t, explain:r.text, ex:r.ex}; }
+const QUIZ=[
+ pairQ(1),
+ {type:"mc", q:"Die Regierung erhöht alle Pensionen um 5 %. Welche zwei Ziele geraten dabei am ehesten in Konflikt?", opts:[["a","Einkommensverteilung und ausgeglichenes Budget"],["b","Vollbeschäftigung und Wachstum"],["c","Ökologie und Zahlungsbilanz"],["d","Preisstabilität und Ökologie"]], correct:"a", explain:"Höhere Pensionen helfen Pensionist:innen mit wenig Geld, kosten aber Milliarden und vergrößern das Defizit."},
+ pairQ(0),
+ pairQ(10),
+ {type:"mc", q:"Österreich hat gleich viele Schulden in Euro wie im Vorjahr, aber das BIP ist gewachsen. Was passiert mit der Schuldenquote?", opts:[["a","Sie steigt"],["b","Sie sinkt"],["c","Sie bleibt gleich"],["d","Das hängt nur vom Defizit ab"]], correct:"b", explain:"Die Schuldenquote ist Schulden geteilt durch BIP. Wird das BIP größer, sinkt die Quote, auch ohne Rückzahlung."},
+ pairQ(6),
+ {type:"mc", q:"Wer entscheidet über den Leitzins, der in Österreich gilt?", opts:[["a","Die Bundesregierung"],["b","Der Nationalrat"],["c","Die Europäische Zentralbank (EZB)"],["d","Die Oesterreichische Nationalbank allein"]], correct:"c", explain:"Die EZB legt den Leitzins für den ganzen Euroraum fest. Der Gouverneur der Oesterreichischen Nationalbank stimmt im EZB-Rat mit."},
+ pairQ(3),
+ {type:"mc", q:"Welches Ziel kam laut eurem Schulbuch erst ab dem Jahr 2000 ins Vieleck?", opts:[["a","Preisstabilität"],["b","Außenwirtschaftliches Gleichgewicht"],["c","Vollbeschäftigung"],["d","Ökologisches Gleichgewicht"]], correct:"d", explain:"Ab 2000 kommen ökologisches Gleichgewicht und die Einschränkung der Staatsverschuldung dazu (S. 21, Abb. 21.2)."},
+ pairQ(9)
+];
+let qi=0, score=0, answered=false;
+function renderQuiz(focus){
+  const box=$("#quiz");
+  if(qi>=QUIZ.length){
+    box.innerHTML='<p class="eyebrow">Geschafft</p><p class="pair">'+score+' von '+QUIZ.length+' richtig</p><p>'+(score>=7?'Stark. Ihr habt das Vieleck verstanden.':'Schaut euch die Linien im Tab „Die 8 Ziele“ noch einmal an und startet den Test dann neu.')+'</p>'+
+      '<p><button class="btn" type="button" id="qAgain">Test neu starten</button></p>';
+    $("#qAgain").addEventListener("click",()=>{ qi=0; score=0; renderQuiz(true); });
+    if(focus) focusHeading(box);
+    return;
+  }
+  const item=QUIZ[qi]; answered=false;
+  box.innerHTML='<p class="progress">Frage '+(qi+1)+' von '+QUIZ.length+' · '+score+' richtig</p>'+
+    '<p class="eyebrow">'+(item.type==="pair"?'Wie hängen diese zwei Ziele zusammen?':'Wählt die richtige Antwort')+'</p><p class="pair">'+(item.type==="pair"?esc(item.q).replace("&lt;em&gt;↔&lt;/em&gt;","<em>↔</em>"):esc(item.q))+'</p>'+
+    '<div class="answers">'+item.opts.map(([k,l])=>'<button type="button" data-k="'+k+'">'+esc(l)+(item.type==="pair"?' '+SYM[k]:'')+'</button>').join("")+'</div><div id="qFeed"></div>';
+  box.querySelectorAll(".answers button").forEach(b=>b.addEventListener("click",()=>{
+    if(answered) return; answered=true;
+    const ok=b.dataset.k===item.correct; if(ok) score++;
+    box.querySelectorAll(".answers button").forEach(x=>{ x.disabled=true; if(x.dataset.k===item.correct) x.classList.add("right"); else if(x===b) x.classList.add("wrong"); });
+    const corrLabel=item.opts.find(o=>o[0]===item.correct)[1];
+    $("#qFeed").innerHTML='<p class="feedtitle '+(ok?'ok':'no')+'">'+(ok?'✓ Richtig':'✗ Nicht ganz, richtig ist: '+esc(corrLabel))+'</p><p>'+esc(item.explain)+'</p>'+(item.ex?'<div class="example"><b>Beispiel:</b> '+esc(item.ex)+'</div>':'')+'<p><button class="btn" type="button" id="qNext">'+(qi<QUIZ.length-1?'Nächste Frage →':'Ergebnis anzeigen')+'</button></p>';
+    say(ok?"Richtig":"Nicht ganz, richtig ist: "+corrLabel);
+    const nx=$("#qNext"); nx.addEventListener("click",()=>{ qi++; renderQuiz(true); }); nx.focus();
+  }));
+  if(focus){ const f=box.querySelector(".answers button"); if(f) f.focus(); }
+}
+renderQuiz();
+
+/* ---------- Tastatur für Präsentations-Clicker ---------- */
+document.addEventListener("keydown",e=>{
+  if(!["PageDown","PageUp"].includes(e.key)) return;
+  const tag=(document.activeElement&&document.activeElement.tagName)||"";
+  if(tag==="TEXTAREA"||tag==="INPUT") return;
+  const fwd=e.key==="PageDown";
+  if(curTab==="tab-zeit"){ e.preventDefault(); tlStep=Math.max(0,Math.min(TL.length-1,tlStep+(fwd?1:-1))); renderTL(); say("Das "+TL[tlStep].n); }
+  else if(curTab==="tab-ziele"){ e.preventDefault(); selRel=null; selGoal = selGoal==null ? (fwd?0:7) : (selGoal+(fwd?1:7))%8; renderOcto(); say(G[selGoal].name); }
+  else if(curTab==="tab-test"){ const nx=$("#qNext"); if(nx&&fwd){ e.preventDefault(); nx.click(); } }
+});
+
+/* ---------- Start-Tab: Hash vor gespeichertem Tab ---------- */
+(function(){
+  const h=(location.hash||"").replace("#","");
+  const fromHash=Object.keys(HASH).find(k=>HASH[k]===h);
+  let start=fromHash;
+  if(!start){ try{ const t=localStorage.getItem("vieleck-tab"); if(t && document.getElementById(t)) start=t; }catch(e){} }
+  showTab(start||"tab-ziele");
+})();
+</script>
+
+</body>
+</html>
