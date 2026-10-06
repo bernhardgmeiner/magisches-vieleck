@@ -11,10 +11,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Space+Grotesk:wght@500;700&display=swap">
 <style>
-/* Layout: links das Vieleck als Bühne (SVG), rechts eine Erklärspalte; am Handy untereinander. Stil wie die re:publica-Folien: Graphit, Rot, gelber Textmarker. Version 2. */
+/* Layout: links das Vieleck als Bühne (SVG), rechts eine Erklärspalte; am Handy untereinander. Stil wie die re:publica-Folien: Graphit, Rot, gelber Textmarker; Zielharmonie grün. Version 3.1. */
 :root{
   --bg:#212125; --panel:#2A2A2F; --line:#4A4A51; --grid:#6A6A72; --fg:#F2F0EA; --muted:#B4B1A9; --dim:#9A968E;
-  --red:#FF5A4E; --hl:#FFD400; --hl-ink:#212125; --hl-line:#FFD400; --focus:#FFD400; --harm:#FFD400;
+  --red:#FF5A4E; --hl:#FFD400; --hl-ink:#212125; --hl-line:#FFD400; --focus:#FFD400; --harm:#6CCB8F;
   --ok:#6CCB8F; --warn:#FFB547; --on-status:#212125;
   --display:"Space Grotesk", "Segoe UI", system-ui, sans-serif;
   --mono:"IBM Plex Mono", ui-monospace, "Courier New", monospace;
@@ -22,15 +22,15 @@
 }
 @media (prefers-color-scheme: light){ :root:not([data-theme="dark"]){
   --bg:#F4F2EC; --panel:#FFFFFF; --line:#D6D2C8; --grid:#A9A59C; --fg:#212125; --muted:#55534E; --dim:#6E6B66;
-  --red:#C2271C; --hl:#FFD400; --hl-ink:#212125; --hl-line:#8A6B00; --focus:#212125; --harm:#7A5F00;
+  --red:#C2271C; --hl:#FFD400; --hl-ink:#212125; --hl-line:#8A6B00; --focus:#212125; --harm:#176B3A;
   --ok:#176B3A; --warn:#8F5500; --on-status:#FFFFFF; color-scheme:light } }
 :root[data-theme="light"]{
   --bg:#F4F2EC; --panel:#FFFFFF; --line:#D6D2C8; --grid:#A9A59C; --fg:#212125; --muted:#55534E; --dim:#6E6B66;
-  --red:#C2271C; --hl:#FFD400; --hl-ink:#212125; --hl-line:#8A6B00; --focus:#212125; --harm:#7A5F00;
+  --red:#C2271C; --hl:#FFD400; --hl-ink:#212125; --hl-line:#8A6B00; --focus:#212125; --harm:#176B3A;
   --ok:#176B3A; --warn:#8F5500; --on-status:#FFFFFF; color-scheme:light }
 :root[data-theme="dark"]{
   --bg:#212125; --panel:#2A2A2F; --line:#4A4A51; --grid:#6A6A72; --fg:#F2F0EA; --muted:#B4B1A9; --dim:#9A968E;
-  --red:#FF5A4E; --hl:#FFD400; --hl-ink:#212125; --hl-line:#FFD400; --focus:#FFD400; --harm:#FFD400;
+  --red:#FF5A4E; --hl:#FFD400; --hl-ink:#212125; --hl-line:#FFD400; --focus:#FFD400; --harm:#6CCB8F;
   --ok:#6CCB8F; --warn:#FFB547; --on-status:#212125; color-scheme:dark }
 
 *{box-sizing:border-box}
@@ -132,7 +132,7 @@ details.more[open] summary{margin-bottom:.4em}
 .lbl{fill:var(--fg);font-family:var(--display);font-weight:700;font-size:20px}
 .lbl-s{fill:var(--muted);font-family:var(--mono);font-size:16px}
 .shape{fill:var(--hl);fill-opacity:.22;stroke:var(--hl-line);stroke-width:3.5}
-.dot-neg{fill:var(--red)} .dot-pos{fill:var(--hl-line)} .dot-0{fill:var(--muted)}
+.dot-neg{fill:var(--red)} .dot-pos{fill:var(--ok)} .dot-0{fill:var(--muted)}
 .tl-poly{fill:var(--hl);fill-opacity:.16;stroke:var(--hl-line);stroke-width:3.5}
 
 /* Regierung spielen */
@@ -171,7 +171,7 @@ textarea{width:100%;min-height:5.5em;font:inherit;font-size:.9em;color:var(--fg)
 .pair{font-family:var(--display);font-weight:700;font-size:clamp(22px,2.2vw,36px);line-height:1.15;margin:.2em 0 .6em;text-wrap:balance}
 .pair:focus{outline:none}
 .pair em{font-style:normal;color:var(--red)}
-.answers{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+.answers{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,15em),1fr));gap:10px}
 .progress{color:var(--muted);font-size:.85em}
 .feedtitle{font-size:.78em;letter-spacing:.12em;text-transform:uppercase;margin:1.2em 0 .35em;font-weight:600}
 .feedtitle.ok{color:var(--ok)} .feedtitle.no{color:var(--red)}
@@ -184,7 +184,17 @@ textarea{width:100%;min-height:5.5em;font:inherit;font-size:.9em;color:var(--fg)
   .badge text{font-size:24px}
 }
 
+/* Lange Wörter (Einkommensverteilung …) nie über den Rand laufen lassen */
+body{overflow-wrap:break-word;-webkit-hyphens:auto;hyphens:auto}
+button{min-width:0;overflow-wrap:break-word;-webkit-hyphens:auto;hyphens:auto}
+.mcard span{-webkit-hyphens:manual;hyphens:manual;white-space:nowrap}
+.mcard{flex-wrap:wrap;row-gap:.15em} .mcard span{margin-left:auto}
+.rel-list button>span:last-child{min-width:0}
+.rel-list button{flex-wrap:wrap;row-gap:.2em}
+.tag{-webkit-hyphens:none;hyphens:none}
+
 /* Beamer-Modus */
+:root[data-mode="beamer"] .quiz{max-width:1400px}
 :root[data-mode="beamer"] body{font-size:clamp(19px,1.35vw,28px)}
 :root[data-mode="beamer"] .wrap{max-width:none}
 :root[data-mode="beamer"] .sub, :root[data-mode="beamer"] .src, :root[data-mode="beamer"] .note{display:none}
@@ -674,7 +684,7 @@ function renderSpiel(announce){
   if(kinds.has("A")&&kinds.has("N")) more+='<p>Ihr kombiniert angebots- und nachfrageorientierte Maßnahmen. Das nennt euer Schulbuch <b lang="en">mixed policy</b> (gemischte Wirtschaftspolitik).</p>';
   if(chosen.has("m6")) more+="<p>Achtung: Die Leitzinsen bestimmt die <b>Europäische Zentralbank</b> für den ganzen Euroraum. Die österreichische Regierung kann sie nicht ändern.</p>";
   const bars=G.map(g=>{ const v=t[g.id], c=Math.max(-STEPS,Math.min(STEPS,v)), w=Math.abs(c)/STEPS*50;
-    const style = v>=0 ? "left:50%;width:"+w+"%;background:var(--hl-line)" : "right:50%;width:"+w+"%;background:var(--red)";
+    const style = v>=0 ? "left:50%;width:"+w+"%;background:var(--ok)" : "right:50%;width:"+w+"%;background:var(--red)";
     return '<div class="bar"><span class="nm">'+esc(g.short)+'</span><span class="track"><span class="fill" style="'+style+'"></span></span><span class="v">'+(v>0?"+":"")+v+'</span></div>'; }).join("");
   const d=$("#spielDetails");
   d.innerHTML='<p class="eyebrow">Bilanz eurer Regierung</p><p class="verdict">'+verdict+'</p><div class="bars">'+bars+'</div>'+more+
