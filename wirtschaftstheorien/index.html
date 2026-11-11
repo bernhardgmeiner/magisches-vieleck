@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Wie viel Staat? Wirtschaftstheorien</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+/* GWB 7A · Wirtschaftstheorien (Geo Spots 7/8, Kap. 2.2). Stil wie „Das magische Vieleck“: Graphit, Rot als Akzent, gelber Textmarker = Auswahl. Inhalte nur aus dem Schulbuch S. 24–26. Version 1.0 */
+:root{
+  --bg:#212125; --panel:#2A2A2F; --line:#4A4A51; --grid:#6A6A72; --fg:#F2F0EA; --muted:#B4B1A9; --dim:#9A968E;
+  --red:#FF5A4E; --hl:#FFD400; --hl-ink:#212125; --hl-line:#FFD400; --focus:#FFD400; --ok:#6CCB8F; --on-status:#212125;
+  --zoneA:#3A3A40; --zoneB:#45454C; --zoneC:#52525A;
+  --display:"Space Grotesk","Segoe UI",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"Courier New",monospace;
+  color-scheme:dark;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: light){ :root:not([data-theme="dark"]){
+  --bg:#F4F2EC; --panel:#FFFFFF; --line:#D6D2C8; --grid:#A9A59C; --fg:#212125; --muted:#55534E; --dim:#6E6B66;
+  --red:#C2271C; --hl:#FFD400; --hl-ink:#212125; --hl-line:#8A6B00; --focus:#212125; --ok:#176B3A; --on-status:#FFFFFF;
+  --zoneA:#ECE9E1; --zoneB:#E2DED4; --zoneC:#D8D3C8; color-scheme:light } }
+:root[data-theme="light"]{
+  --bg:#F4F2EC; --panel:#FFFFFF; --line:#D6D2C8; --grid:#A9A59C; --fg:#212125; --muted:#55534E; --dim:#6E6B66;
+  --red:#C2271C; --hl:#FFD400; --hl-ink:#212125; --hl-line:#8A6B00; --focus:#212125; --ok:#176B3A; --on-status:#FFFFFF;
+  --zoneA:#ECE9E1; --zoneB:#E2DED4; --zoneC:#D8D3C8; color-scheme:light }
+:root[data-theme="dark"]{
+  --bg:#212125; --panel:#2A2A2F; --line:#4A4A51; --grid:#6A6A72; --fg:#F2F0EA; --muted:#B4B1A9; --dim:#9A968E;
+  --red:#FF5A4E; --hl:#FFD400; --hl-ink:#212125; --hl-line:#FFD400; --focus:#FFD400; --ok:#6CCB8F; --on-status:#212125;
+  --zoneA:#3A3A40; --zoneB:#45454C; --zoneC:#52525A; color-scheme:dark }
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{background:var(--bg);color:var(--fg);font-family:var(--mono);font-size:clamp(15px,0.9vw + 8px,19px);line-height:1.5;margin:0;overflow-wrap:break-word;-webkit-hyphens:auto;hyphens:auto}
+.wrap{max-width:1500px;margin:0 auto;padding-inline:clamp(16px,3vw,48px);padding-block:14px 40px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:10px 24px;border-left:1px solid var(--line);padding-left:18px;margin-bottom:10px}
+.eyebrow{font-size:.78em;letter-spacing:.14em;text-transform:uppercase;color:var(--red);font-weight:600;margin:0;-webkit-hyphens:none;hyphens:none}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(28px,2.8vw,48px);line-height:1.05;margin:.1em 0 0;text-wrap:balance}
+mark{background:var(--hl);color:var(--hl-ink);padding:0 .12em}
+.sub{color:var(--muted);margin:.35em 0 0;font-size:.8em}
+.tools{display:flex;gap:8px;flex-wrap:wrap}
+button{font:inherit;color:inherit;cursor:pointer;min-width:0;overflow-wrap:break-word;-webkit-hyphens:auto;hyphens:auto}
+.btn{background:transparent;border:1px solid var(--line);border-radius:999px;padding:.35em .95em;font-size:.82em;color:var(--muted);min-height:36px}
+.btn:hover{border-color:var(--fg);color:var(--fg)}
+.btn[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.btn:disabled{opacity:.45;cursor:default}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+
+nav.tabs{display:flex;gap:4px;flex-wrap:wrap;margin:0 0 14px;border-bottom:1px solid var(--line)}
+nav.tabs button{background:none;border:0;border-bottom:3px solid transparent;padding:.5em .9em;font-family:var(--display);font-weight:700;font-size:1.02em;color:var(--muted);margin-bottom:-1px;min-height:44px}
+nav.tabs button[aria-selected="true"]{color:var(--fg);border-bottom-color:var(--red)}
+nav.tabs .num{font-family:var(--mono);font-weight:400;font-size:.8em;color:var(--dim);margin-right:.35em}
+
+.stage{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:clamp(16px,2.5vw,40px);align-items:start}
+@media (max-width:900px){.stage{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:clamp(16px,1.8vw,26px);min-width:0}
+@media (min-width:901px){ .stick{position:sticky;top:10px;max-height:calc(100vh - 20px);overflow:auto} }
+.panel h2{font-family:var(--display);font-size:1.6em;line-height:1.15;margin:.1em 0 .4em;text-wrap:balance}
+.panel h2:focus{outline:none}
+h3{font-size:.78em;letter-spacing:.12em;text-transform:uppercase;color:var(--red);margin:1.2em 0 .35em;-webkit-hyphens:none;hyphens:none}
+.panel p{margin:.3em 0 .6em}
+ul.list{margin:.2em 0 .6em;padding-left:1.15em}
+ul.list li{margin:.15em 0}
+.who{font-family:var(--display);font-weight:700;font-size:1.05em;margin:0 0 .2em}
+.who span{font-family:var(--mono);font-weight:400;color:var(--muted);font-size:.85em}
+.core{border-left:3px solid var(--hl);padding:.2em 0 .2em .8em;margin:.8em 0}
+.note{font-size:.82em;color:var(--dim);margin-top:10px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin:.3em 0 .6em}
+.tag{font-size:.78em;border:1px dashed var(--grid);border-radius:3px;padding:.1em .5em;color:var(--muted)}
+.links{display:flex;flex-wrap:wrap;gap:8px;margin:.4em 0}
+.back{margin:0 0 .6em}
+
+/* 1 Einstieg */
+.bigq{font-family:var(--display);font-weight:700;font-size:clamp(22px,2.3vw,38px);line-height:1.2;margin:.2em 0 .5em;text-wrap:balance;max-width:28ch}
+.lead{border-left:3px solid var(--red);padding:.2em 0 .2em .9em;margin:0 0 18px;max-width:80ch}
+.cards3{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,15em),1fr));gap:10px;margin:.6em 0 18px}
+.ex{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:.8em .9em}
+.ex b{font-family:var(--display);display:block;font-size:1.05em;margin-bottom:.2em}
+.ex small{display:block;color:var(--muted);font-size:.82em;margin-top:.35em}
+.roots{display:grid;gap:12px}
+.root{border-top:1px solid var(--line);padding-top:.7em}
+.root:first-child{border-top:0;padding-top:0}
+.root h4{font-family:var(--display);font-size:1.1em;margin:0 0 .25em}
+.mm{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:.4em 0}
+.mm div{border:1px solid var(--line);border-radius:4px;padding:.5em .6em;font-size:.88em}
+.mm b{display:block;font-family:var(--display)}
+.slider{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:clamp(14px,1.6vw,22px);margin-top:4px}
+.slider label{font-family:var(--display);font-weight:700;font-size:1.15em;display:block;margin-bottom:.4em}
+input[type=range]{width:100%;accent-color:var(--hl-line);height:36px}
+.ends{display:flex;justify-content:space-between;gap:12px;font-size:.82em;color:var(--muted)}
+.ends span:last-child{text-align:right}
+.youtxt{margin:.5em 0 0;font-size:.9em}
+
+/* 2 Landkarte */
+.map{display:grid;grid-template-columns:2fr 1fr 1fr;gap:0;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.zone{padding:10px;min-width:0;display:flex;flex-direction:column;gap:8px}
+.zone.A{background:var(--zoneA)} .zone.B{background:var(--zoneB)} .zone.C{background:var(--zoneC)}
+.zhead{min-height:4.2em}
+.zhead b{font-family:var(--display);font-size:1.1em;display:block;line-height:1.2}
+.zhead small{color:var(--muted);font-size:.8em;display:block}
+.zgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.zone.B .zgrid,.zone.C .zgrid{grid-template-columns:1fr}
+.tcard{text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:.6em .7em;min-height:64px;display:flex;flex-direction:column;gap:.15em;width:100%}
+.tcard:hover{border-color:var(--fg)}
+.tcard b{font-family:var(--display);font-size:.98em;line-height:1.15}
+.tcard span{font-size:.78em;color:var(--muted)}
+.tcard em{font-style:normal;font-size:.72em;letter-spacing:.08em;text-transform:uppercase;color:var(--red);font-weight:600;-webkit-hyphens:none;hyphens:none}
+.tcard[aria-pressed="true"]{background:var(--hl);color:var(--hl-ink);border-color:var(--hl-line)}
+.tcard[aria-pressed="true"] span,.tcard[aria-pressed="true"] em{color:var(--hl-ink)}
+.axis{position:relative;margin:10px 0 4px;height:46px}
+.axis .bar{position:absolute;left:0;right:0;top:14px;height:10px;border-radius:5px;background:linear-gradient(90deg,var(--zoneA),var(--grid))}
+.axis .lab{position:absolute;top:28px;font-size:.78em;color:var(--muted)}
+.axis .lab.l{left:0} .axis .lab.r{right:0}
+.you{position:absolute;top:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;pointer-events:none}
+.you i{font-style:normal;font-size:.72em;font-weight:600;background:var(--fg);color:var(--bg);border-radius:3px;padding:0 .4em;line-height:1.5}
+.you s{display:block;width:3px;height:16px;background:var(--fg);text-decoration:none}
+.rowlabel{font-family:var(--display);font-weight:700;margin:18px 0 6px;font-size:1.05em}
+.rowlabel small{font-family:var(--mono);font-weight:400;color:var(--muted);font-size:.78em;margin-left:.4em}
+.minirow{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,14em),1fr));gap:8px}
+.minirow .tcard{min-height:56px}
+.legendline{font-size:.8em;color:var(--dim);margin:6px 0 0}
+#p-karte .stage{grid-template-columns:minmax(0,2fr) minmax(0,1fr)}
+@media (max-width:1279px){ #p-karte .stage{grid-template-columns:1fr} #p-karte .stick{position:static;max-height:none;overflow:visible} }
+@media (max-width:860px){ .axis{display:none} }
+@media (max-width:860px){
+  .map{grid-template-columns:1fr}
+  .zhead{min-height:0}
+  .zgrid{grid-template-columns:1fr}
+}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:.4em 0}
+.duo>div{border:1px solid var(--line);border-radius:4px;padding:.5em .7em;font-size:.9em}
+.duo b{font-family:var(--display);display:block}
+@media (max-width:520px){.duo{grid-template-columns:1fr}}
+.unpaid{display:grid;gap:6px;margin:.5em 0}
+.urow{display:grid;grid-template-columns:7.2em minmax(0,1fr);gap:10px;align-items:start;font-size:.86em}
+.urow b{display:inline-block;background:var(--hl);color:var(--hl-ink);padding:0 .35em;border-radius:2px;font-weight:600;white-space:nowrap}
+.urow.at span{font-weight:600}
+
+/* 3 Zeitleiste */
+#tl{width:100%;height:auto;display:block}
+.tl-axis{stroke:var(--grid);stroke-width:1.5}
+.tl-tick{fill:var(--muted);font-family:var(--mono);font-size:16px}
+.tl-band{fill:var(--zoneB);opacity:.7}
+.tl-bandtxt{fill:var(--muted);font-family:var(--mono);font-size:15px}
+.tl-line{stroke:var(--red);stroke-width:2.5;stroke-dasharray:6 5}
+.tl-linetxt{fill:var(--red);font-family:var(--display);font-weight:700;font-size:18px}
+.life{cursor:pointer}
+.life rect.b{fill:var(--panel);stroke:var(--fg);stroke-width:2}
+.life rect.hit{fill:transparent}
+.life text{fill:var(--fg);font-family:var(--display);font-weight:700;font-size:22px}
+.life text.y{font-family:var(--mono);font-weight:400;font-size:15px;fill:var(--muted)}
+.life.sel rect.b{fill:var(--hl);stroke:var(--hl-line)}
+.life.sel text.in{fill:var(--hl-ink)}
+.life.same rect.b{stroke:var(--hl-line);stroke-width:4}
+.life.dim{opacity:.35}
+.life:focus{outline:none} .life:focus-visible rect.b{stroke:var(--focus);stroke-width:5}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 10px}
+
+/* 4 Duell */
+.duel-q{border-left:3px solid var(--red);padding:.3em 0 .3em .9em;margin:0 0 14px;max-width:85ch}
+.duel-q b{font-family:var(--display)}
+.vs-head{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:end;margin-bottom:8px}
+.vs-head div{font-family:var(--display);font-weight:700;font-size:1.15em;line-height:1.15}
+.vs-head div small{display:block;font-family:var(--mono);font-weight:400;font-size:.7em;color:var(--muted)}
+.vs-head .r{text-align:right}
+.vs-head .mid{font-size:.9em;color:var(--red);align-self:center}
+.rounds{display:grid;gap:8px}
+.round{border:1px solid var(--line);border-radius:6px;background:var(--panel)}
+.round>button{width:100%;text-align:left;background:none;border:0;padding:.7em .9em;display:flex;justify-content:space-between;gap:10px;align-items:center;min-height:48px}
+.round>button b{font-family:var(--display);font-size:1.05em}
+.round>button span{font-size:.78em;color:var(--muted);white-space:nowrap;-webkit-hyphens:none;hyphens:none}
+.round .sides{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line)}
+.round .sides>div{padding:.7em .9em;font-size:.9em;min-width:0}
+.round .sides>div+div{border-left:1px solid var(--line)}
+.round .sides small{display:block;font-size:.72em;letter-spacing:.1em;text-transform:uppercase;color:var(--red);font-weight:600;margin-bottom:.2em;-webkit-hyphens:none;hyphens:none}
+@media (max-width:560px){ .round .sides{grid-template-columns:1fr} .round .sides>div+div{border-left:0;border-top:1px solid var(--line)} }
+#cycle{width:100%;height:auto;display:block}
+.cy-axis{stroke:var(--grid);stroke-width:1.5}
+.cy-wave{fill:none;stroke:var(--fg);stroke-width:3.5}
+.cy-ghost{fill:none;stroke:var(--grid);stroke-width:2.5;stroke-dasharray:7 6}
+.cy-lbl{fill:var(--fg);font-family:var(--display);font-weight:700;font-size:17px}
+.cy-small{fill:var(--muted);font-family:var(--mono);font-size:14px}
+.cy-up{fill:var(--ok)} .cy-down{fill:var(--red)}
+.cy-zero{stroke:var(--grid);stroke-width:1}
+.toggle{display:flex;flex-wrap:wrap;gap:8px;margin:.2em 0 .6em}
+
+/* 5 Selbsttest */
+.quiz{max-width:960px}
+.qcard{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:clamp(16px,2vw,28px)}
+.pair{font-family:var(--display);font-weight:700;font-size:clamp(20px,2vw,32px);line-height:1.2;margin:.2em 0 .7em;text-wrap:balance}
+.pair:focus{outline:none}
+.quote{font-family:var(--display);font-weight:700;font-size:clamp(20px,2vw,32px);line-height:1.25;margin:.2em 0 .7em;border-left:4px solid var(--hl);padding-left:.7em}
+.answers{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,15em),1fr));gap:10px}
+.answers button{border:2px solid var(--line);background:transparent;border-radius:6px;padding:.7em;font-weight:600;min-height:52px;text-align:center}
+.answers button:hover:not(:disabled){border-color:var(--fg)}
+.answers button.right{border-color:var(--ok)} .answers button.right::before{content:"✓ ";color:var(--ok)}
+.answers button.wrong{border-color:var(--red)} .answers button.wrong::before{content:"✗ ";color:var(--red)}
+.answers button:disabled{cursor:default}
+.answers button:disabled:not(.right):not(.wrong){opacity:.55}
+.progress{color:var(--muted);font-size:.85em;margin:0}
+.feedtitle{font-size:.78em;letter-spacing:.12em;text-transform:uppercase;margin:1.2em 0 .35em;font-weight:600}
+.feedtitle.ok{color:var(--ok)} .feedtitle.no{color:var(--red)}
+
+footer{margin-top:28px;font-size:.78em;color:var(--dim);border-top:1px solid var(--line);padding-top:10px}
+
+/* Beamer */
+:root[data-mode="beamer"] body{font-size:clamp(19px,1.35vw,28px)}
+:root[data-mode="beamer"] .wrap{max-width:none}
+:root[data-mode="beamer"] .sub, :root[data-mode="beamer"] .note, :root[data-mode="beamer"] footer, :root[data-mode="beamer"] .legendline{display:none}
+:root[data-mode="beamer"] h1{font-size:clamp(26px,2.2vw,40px)}
+:root[data-mode="beamer"] .quiz{max-width:1400px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <p class="eyebrow">GWB 7A · Kapitel 2.2 · Vielfalt ökonomischer Theorien</p>
+      <h1>Wie viel <mark>Staat</mark> braucht die Wirtschaft?</h1>
+      <p class="sub">Wirtschaftstheorien von Adam Smith bis heute. Alle Inhalte stammen aus eurem Schulbuch Geo Spots 7/8, S. 24–26.</p>
+    </div>
+    <div class="tools">
+      <button class="btn" id="beamerBtn" type="button" aria-pressed="false">Beamer-Modus</button>
+      <button class="btn" id="themeBtn" type="button">Hell / Dunkel</button>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Bereiche">
+    <button role="tab" id="tab-start" aria-selected="true" aria-controls="p-start" type="button"><span class="num">1</span>Worum es geht</button>
+    <button role="tab" id="tab-karte" aria-selected="false" aria-controls="p-karte" type="button" tabindex="-1"><span class="num">2</span>Die Theorien</button>
+    <button role="tab" id="tab-zeit" aria-selected="false" aria-controls="p-zeit" type="button" tabindex="-1"><span class="num">3</span>Zeitleiste</button>
+    <button role="tab" id="tab-duell" aria-selected="false" aria-controls="p-duell" type="button" tabindex="-1"><span class="num">4</span>Keynes gegen Friedman</button>
+    <button role="tab" id="tab-test" aria-selected="false" aria-controls="p-test" type="button" tabindex="-1"><span class="num">5</span>Selbsttest</button>
+  </nav>
+
+  <p id="live" class="sr-only" aria-live="polite"></p>
+
+  <!-- 1 Worum es geht -->
+  <section id="p-start" role="tabpanel" aria-labelledby="tab-start">
+    <div class="stage">
+      <div>
+        <p class="eyebrow">Die eine Frage</p>
+        <p class="bigq">Wie weit soll der Staat durch Gesetze und Regeln in die Wirtschaft eingreifen, oder eben nicht?</p>
+        <p class="lead">Um diese Frage dreht sich laut eurem Schulbuch jede Wirtschaftstheorie und jede Wirtschaftspolitik. Die Antworten fallen sehr unterschiedlich aus, je nach Interessen und politischer Haltung. Wer argumentiert, stützt sich dabei oft auf eine Wirtschaftstheorie.</p>
+        <h3>Drei Beispiele: Hier greift der Staat ein</h3>
+        <div class="cards3">
+          <div class="ex"><b>Landwirtschaft</b>Die EU zahlt Subventionen an die Landwirtschaft.<small>Begründung: Der Markt versagt hier (Marktversagen). Ziel: Es soll kein „Bauernsterben“ geben.</small></div>
+          <div class="ex"><b>Sozialpolitik</b>Der Staat unterstützt Menschen mit Sozialleistungen.<small>Ziel: Armut vermeiden.</small></div>
+          <div class="ex"><b>Wirtschaftskrise</b>Der Staat greift in die Märkte ein.<small>Mit Verstaatlichungen und anderen Rettungsmaßnahmen.</small></div>
+        </div>
+        <div class="slider">
+          <label for="you">Wo steht ihr gerade?</label>
+          <input type="range" id="you" min="0" max="100" step="1" value="50" aria-describedby="youTxt">
+          <div class="ends"><span>Der Markt regelt alles</span><span>Der Staat lenkt alles</span></div>
+          <p class="youtxt" id="youTxt"></p>
+          <p class="note">Euer Regler erscheint als Markierung „Ihr“ im Bereich „Die Theorien“. Er wird nur in diesem Browser gespeichert.</p>
+        </div>
+        <p style="margin-top:14px"><button class="btn" type="button" data-goto="tab-karte">Weiter zu den Theorien →</button></p>
+      </div>
+      <aside class="panel stick" aria-label="Grundbegriffe">
+        <p class="eyebrow">Woher kommt das alles?</p>
+        <h2>Ein paar Grundlagen</h2>
+        <div class="roots">
+          <div class="root"><h4>Oikos: der Haushalt</h4><p>Bei den alten Griechen hieß die Haushalts- und Wirtschaftsgemeinschaft <b>Oikos</b>. Dort lebten die Familie, die Bediensteten und die Sklav:innen. Wer „Ökonomie“ betrieb, musste haushalten können. Ökonomie heißt also ursprünglich: <mark>Haushaltslehre</mark>.</p></div>
+          <div class="root"><h4>Wirtschaft ist eine Sozialwissenschaft</h4><p>Wirtschaft hängt immer mit menschlichem Handeln zusammen. Darum gehört sie zu den Sozialwissenschaften: Die Politikwissenschaft erforscht die Politik, die Wirtschaftswissenschaft die Wirtschaft, die Soziologie die Gesellschaft. Wichtig ist, über die Fächergrenzen hinweg zu denken.</p><p>Weil wirtschaftliches Handeln immer Menschen betrifft, spricht man von <b>Sozioökonomie</b>. Die <b>Ökonomik</b> dagegen rechnet: Sie bildet Abläufe in der Wirtschaft mathematisch ab.</p></div>
+          <div class="root"><h4>Mikro oder Makro?</h4>
+            <div class="mm"><div><b>Mikroökonomie</b>einzelne Menschen, Haushalte und Unternehmen</div><div><b>Makroökonomie</b>die ganze Volkswirtschaft, z. B. Beschäftigung, Staatsverschuldung, Geldmarkt</div></div>
+            <p>Euer Buch kritisiert: Oft wird eine „reine“ Ökonomie gelehrt, die Macht, Herrschaft und Interessen ausklammert. Dann bleibt sie weit weg von der Wirklichkeit.</p></div>
+          <div class="root"><h4>Theorie trifft Praxis</h4><p><b>Theorie</b> kommt aus dem Griechischen und heißt Anschauung oder Betrachtung. Theorie gilt oft als abgehoben. Bei der Wirtschaft hängen Theorie und Praxis aber eng zusammen: Die Wirtschaftspolitik setzt Theorien um, und das spürt ihr direkt.</p><p>Wirtschaftstheorien erklären die Wirtschaft unterschiedlich, weil sie von unterschiedlichen Annahmen ausgehen. Wer nur eine einzige Erklärung gelten lässt, denkt laut Buch eher in ideologischen Kategorien.</p></div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- 2 Die Theorien -->
+  <section id="p-karte" role="tabpanel" aria-labelledby="tab-karte" hidden>
+    <div class="stage">
+      <div>
+        <div class="axis" aria-hidden="true"><div class="bar"></div><span class="lab l">weniger Staat</span><span class="lab r">mehr Staat</span><div class="you" id="youMark"><i>Ihr</i><s></s></div></div>
+        <div class="map" role="group" aria-label="Wirtschaftstheorien, geordnet danach, wie stark der Staat eingreifen soll">
+          <div class="zone A"><div class="zhead"><b>Der Markt regelt</b><small>Der Staat hält sich (weitgehend) heraus</small></div><div class="zgrid" data-zone="A"></div></div>
+          <div class="zone B"><div class="zhead"><b>Der Staat steuert mit</b><small>Markt, aber mit aktivem Staat</small></div><div class="zgrid" data-zone="B"></div></div>
+          <div class="zone C"><div class="zhead"><b>Der Staat plant</b><small>Planung statt Markt</small></div><div class="zgrid" data-zone="C"></div></div>
+        </div>
+        <p class="legendline">Die drei Felder sind eine grobe Einteilung. Auch innerhalb eines Feldes unterscheiden sich die Theorien.</p>
+        <p class="rowlabel">Davor <small>Diese Systeme lehnte Adam Smith ab</small></p>
+        <div class="minirow" data-zone="P"></div>
+        <p class="rowlabel">Neue Ansätze <small>außerhalb der traditionellen Wirtschaftswissenschaften</small></p>
+        <div class="minirow" data-zone="N"></div>
+      </div>
+      <aside class="panel stick" id="info" aria-live="polite"></aside>
+    </div>
+  </section>
+
+  <!-- 3 Zeitleiste -->
+  <section id="p-zeit" role="tabpanel" aria-labelledby="tab-zeit" hidden>
+    <div class="stage">
+      <div>
+        <svg id="tl" viewBox="0 0 800 520" role="group" aria-label="Zeitleiste: Lebensdaten von Smith, Marx, Keynes, Hayek und Friedman. Personen mit der Tab-Taste erreichbar."></svg>
+      </div>
+      <aside class="panel stick" id="tlInfo"></aside>
+    </div>
+  </section>
+
+  <!-- 4 Keynes gegen Friedman -->
+  <section id="p-duell" role="tabpanel" aria-labelledby="tab-duell" hidden>
+    <p class="duel-q"><b>Die umstrittene Grundfrage:</b> Finden Märkte durch das freie Spiel von Angebot und Nachfrage ins <b>Gleichgewicht</b> (Friedman)? Oder bleiben sie im <b>Ungleichgewicht</b> (Keynes), sodass der Staat mit seiner Wirtschaftspolitik steuern muss?</p>
+    <div class="stage">
+      <div>
+        <div class="vs-head"><div>John Maynard Keynes<small>Keynesianismus · 1883–1946</small></div><div class="mid">gegen</div><div class="r">Milton Friedman<small>Monetarismus · 1912–2006</small></div></div>
+        <div class="toggle"><button class="btn" type="button" id="openAll">Alle Runden aufdecken</button><button class="btn" type="button" id="closeAll">Alle zudecken</button></div>
+        <div class="rounds" id="rounds"></div>
+        <p class="note">Friedman und Hayek stehen laut Buch auf derselben Seite: Ihre Positionen (Monetarismus und Neoliberalismus) stehen jenen von Keynes genau gegenüber.</p>
+      </div>
+      <aside class="panel stick">
+        <p class="eyebrow">Keynes’ Rezept</p>
+        <h2>Antizyklische Wirtschaftspolitik</h2>
+        <div class="toggle" role="group" aria-label="Ansicht"><button class="btn" type="button" id="cyOff" aria-pressed="true">Ohne Eingriff</button><button class="btn" type="button" id="cyOn" aria-pressed="false">Mit antizyklischer Politik</button></div>
+        <svg id="cycle" viewBox="0 0 640 405" role="img" aria-labelledby="cyTitle"><title id="cyTitle">Konjunkturkurve mit Hochkonjunktur und Rezession</title></svg>
+        <div id="cyText"></div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- 5 Selbsttest -->
+  <section id="p-test" role="tabpanel" aria-labelledby="tab-test" hidden>
+    <div class="quiz"><div class="qcard" id="quiz"></div></div>
+  </section>
+
+  <footer>Quelle aller Inhalte: Geo Spots 7/8, Kapitel 2.2 „Vielfalt ökonomischer Theorien“, S. 24–26. Die Einteilung nach „wie viel Staat“ ist eine Vereinfachung für den Überblick.</footer>
+</div>
+
+<script>
+/* ================= Daten (nur Schulbuch S. 24–26) ================= */
+const T = {
+ smith:{zone:"A", name:"Liberalismus", who:"Adam Smith", years:"1723–1790", short:"Freier Markt, wenig Staat",
+  intro:"Schottischer Moralphilosoph, gilt als Begründer des Wirtschaftsliberalismus.",
+  core:"Der freie Wettbewerb regelt fast alles. Der Staat greift nur in wenigen Bereichen ein.",
+  sections:[
+   ["Menschenbild","Der <b>Homo oeconomicus</b>: Der Mensch handelt rational und will möglichst viel Gewinn machen."],
+   ["Rolle des Staates","Er greift nur in wenige Bereiche ein, etwa in die Justiz oder den Verkehr."],
+   ["Kernaussagen",["Wichtigste Voraussetzung für einen funktionierenden Markt ist der <b>freie Wettbewerb</b>.","Angebot und Nachfrage bestimmen frei, welche Güter und Dienstleistungen es gibt, wie viel davon und zu welchem Preis.","Wie „von einer <mark>unsichtbaren Hand</mark> gesteuert“ entsteht ein Gleichgewicht zwischen Produktion und Konsum, Löhnen und Preisen.","Alle streben nach Gewinn und Wohlstand. Dieser Eigennutz treibt die Wirtschaft an und führt zum Wohl der ganzen Gesellschaft."]],
+   ["Zeit","Smith schrieb, als der Liberalismus aufkam. Seine Ideen richteten sich gegen den Feudalismus und den Merkantilismus."],
+   ["Im Vergleich mit Marx","Smith setzt auf die Kräfte des freien Marktes. Marx dagegen will alle Produktionsmittel der Gesellschaft übergeben."]
+  ],
+  tags:["freier Markt"], links:["manchester","feud","merk","marx"]},
+ manchester:{zone:"A", name:"Manchester­liberalismus", who:"19. Jahrhundert", years:"", flag:"extremste Form", short:"Der Staat hält sich ganz heraus",
+  intro:"Die extremste Form des Wirtschaftsliberalismus, im 19. Jahrhundert.",
+  core:"Der Staat verzichtet auf jede Einflussnahme auf das Wirtschaftsgeschehen.",
+  sections:[
+   ["Rolle des Staates","Keine. Der Staat enthält sich jeglicher Einflussnahme auf die Wirtschaft."],
+   ["Folgen","Sehr zum Nachteil der Arbeiter:innen: Sie wurden massiv ausgebeutet."],
+   ["Was daraus wurde","Die Lage der Arbeiter:innen wurde zur Grundlage für sozialistische und kommunistische Ideen, etwa die von Karl Marx."]
+  ],
+  tags:[], links:["smith","marx"]},
+ hayek:{zone:"A", name:"Neoliberalismus", who:"Friedrich August von Hayek", years:"1899–1992", short:"Der Markt regelt im Zweifel alles",
+  intro:"In der Übersichtsgrafik eures Buches (Abb. 26.1) steht Hayek für den Neoliberalismus.",
+  core:"„Der Markt regelt im Zweifel alles!“ Der Staat setzt nur den Rahmen, mitspielen soll er nicht.",
+  sections:[
+   ["Rolle des Staates","Er setzt Rahmenbedingungen, etwa Regeln für den Wettbewerb. Selbst beteiligt er sich aber nicht als Akteur an der Wirtschaft und greift nicht ein."],
+   ["Kernaussagen",["Im Zentrum steht das <b>Angebot</b> (Angebotsorientierung).","Entstanden gegen den Staatsinterventionismus, also gegen einen Staat, der laufend eingreift, als neuer liberaler Ansatz: „Neo-Liberalismus“.","Das Eigeninteresse bringt das sozial Beste hervor.","Ein „<mark>schlanker Staat</mark>“ sorgt für Liberalisierung, Deregulierung und Privatisierung aller Lebensbereiche."]],
+   ["In der Praxis","Als Wirtschaftspolitik in den USA und im Vereinigten Königreich bekannt unter den Namen <b>Reaganomics</b> und <b>Thatcherismus</b>."],
+   ["Heute","Laut Buch beruhen heute die meisten Wirtschaftsordnungen der westlichen Industrieländer auf den Prinzipien des Neoliberalismus."]
+  ],
+  tags:["Markt","staatliche Rahmenbedingungen"], links:["friedman","keynes","smith"]},
+ friedman:{zone:"A", name:"Monetarismus", who:"Milton Friedman", years:"1912–2006", short:"Der Markt regelt sich selbst, der Staat steuert nur das Geld",
+  intro:"Friedman hat die Theorie des Monetarismus entwickelt.",
+  core:"Der Markt reguliert sich selbst. Der Staat steuert nur die Geldmenge, nach festen Regeln.",
+  sections:[
+   ["Grundannahme","Der Markt ist ein System, das sich selbst reguliert. Durch Angebot und Nachfrage findet er ins Gleichgewicht."],
+   ["Rolle des Staates","Staatliche Eingriffe sind nicht notwendig. Der Staat soll das Privateigentum schützen und für Wettbewerb sorgen. Nur die <b>Geldmenge</b> steuern Staat bzw. Zentralbank, nach Regeln, damit die Preise stabil bleiben."],
+   ["Kernaussagen",["Unternehmen brauchen viel wirtschaftliche Freiheit, etwa durch <b>niedrigere Unternehmenssteuern</b>.","Die meisten wirtschaftspolitischen Ziele regelt der Markt von selbst.","Monetarist:innen gehen so weit, dass sie das Eingreifen des Staates als Ursache für Marktversagen sehen."]],
+   ["Gegenspieler","John Maynard Keynes. Mehr dazu im Bereich „Keynes gegen Friedman“."]
+  ],
+  tags:["regelgebundene Angebotspolitik"], links:["keynes","hayek"]},
+ keynes:{zone:"B", name:"Keynesianismus", who:"John Maynard Keynes", years:"1883–1946", short:"Der Staat steuert gegen die Krise",
+  intro:"Keynes kritisierte vor allem den klassischen Liberalismus, der laut Buch die Weltwirtschaftskrise von 1929 mitbefördert hatte.",
+  core:"Märkte können im Ungleichgewicht steckenbleiben. Darum muss der Staat mit seinem Budget aktiv eingreifen.",
+  sections:[
+   ["Grundannahme","Wirtschaft ist instabil. Gerade in Krisen findet die freie Marktwirtschaft nicht von selbst zurück ins Gleichgewicht."],
+   ["Rolle des Staates","Er greift mit seinem Budget (Budgetpolitik) aktiv steuernd in die Wirtschaft ein."],
+   ["Kernaussagen",["Fehlt Wachstum, liegt das an zu geringen Investitionen und zu wenig Kaufkraft.","Die Kaufkraft ist hoch, wenn Vollbeschäftigung herrscht.","In einer Rezession oder Depression kurbelt der Staat mit seinen Ausgaben Konsum und Investitionen an, auch auf Schulden: <mark>deficit spending</mark>.","Die Staatsschulden steigen dadurch. In der Hochkonjunktur sollen sie wieder abgebaut werden: <b>antizyklische Wirtschaftspolitik</b>."]],
+   ["Keynes’ Positionen laut Buch",["Nicht das Angebot schafft sich seine Nachfrage, sondern die Nachfrage bestimmt das Angebot.","Wie viel Konsument:innen sparen, hängt vor allem vom Einkommen ab, nicht vom Zins.","Ob Unternehmen investieren, hängt von ihren Erwartungen an die Zukunft ab.","Der Arbeitsmarkt ist ein besonderer Markt.","Die Geldwirtschaft funktioniert nicht wie die Tauschwirtschaft."]]
+  ],
+  tags:["Nachfragepolitik","Staatsinterventionen"], links:["friedman","hayek","smith"]},
+ marx:{zone:"C", name:"Marxismus / Kommunismus", who:"Karl Marx", years:"1818–1883", short:"Planung statt Markt",
+  intro:"In seinen Schriften findet sich vor allem eine scharfe Kritik am Kapitalismus.",
+  core:"Die Produktionsmittel gehören der Gesellschaft. Statt des Marktes plant der Staat die Wirtschaft.",
+  sections:[
+   ["Menschenbild","Marx fordert ein Ende der Ausbeutung des Menschen durch den Menschen."],
+   ["So sieht Marx den Kapitalismus",["Privateigentum an Produktionsmitteln (Kapital, Grund und Boden, Produktionsstätten, Arbeiter:innen)","Gewinnmaximierung durch die Produktion von Waren","Das Kapital bestimmt, wie produziert wird.","Wettbewerb und Konkurrenz bündeln das Kapital bei einigen wenigen.","Klassengesellschaft: Proletariat (Arbeiter:innen) und Bourgeoisie (Kapitalist:innen) mit gegensätzlichen Interessen","Ausbeutung und Entfremdung der Arbeiter:innen","Verelendung der Arbeiter:innen durch den Einsatz von Maschinen","Sinkende Kaufkraft lässt die Profitrate der Unternehmen sinken.","Das kapitalistische System gerät immer wieder in Krisen."]],
+   ["Marx’ Lösung",["Revolution der Arbeiterklasse","Die Kapitalist:innen werden enteignet, die Produktionsmittel gehen an die Gesellschaft (<mark>Vergesellschaftung</mark>).","Rolle des Staates: Statt des Marktes plant und lenkt er die Wirtschaft.","Ziel ist die Deckung des Bedarfs, nicht der größtmögliche Profit.","Alle Menschen sind gleichwertig: eine klassenlose Gesellschaft."]]
+  ],
+  tags:["Vergesellschaftung der Produktionsmittel"], links:["manchester","smith"]},
+ feud:{zone:"P", name:"Feudalismus", who:"Mittelalter", years:"", short:"Adel und Kirche führen",
+  intro:"Gesellschaftssystem des Mittelalters.",
+  core:"Adel und Kirche führen. Der Landesfürst verleiht Rechte und Land, die bäuerliche Bevölkerung bewirtschaftet es.",
+  sections:[
+   ["So funktioniert es","Zu den führenden Schichten zählen Adel und Kirche. Der Landesfürst verleiht Rechte und Ländereien. Bewirtschaftet werden sie von der bäuerlichen Bevölkerung, vor allem von Leibeigenen."],
+   ["Und dann?","Adam Smiths Ideen richteten sich gegen dieses Gesellschaftsmodell."]
+  ], tags:[], links:["smith","merk"]},
+ merk:{zone:"P", name:"Merkantilismus", who:"Zeit des Absolutismus", years:"", short:"Der Staat will möglichst viel Geld",
+  intro:"Wirtschaftssystem des Absolutismus, vor allem in Frankreich.",
+  core:"Ein staatliches System mit einem Ziel: möglichst viel Geld erwirtschaften.",
+  sections:[
+   ["So funktioniert es",["Man errichtete erste Fabriken.","Billige Rohstoffe kamen aus den Kolonien, Fertigwaren gingen in den Export.","Zölle schützten die eigene Wirtschaft."]],
+   ["Und dann?","Adam Smiths Ideen richteten sich gegen dieses Wirtschaftsmodell."]
+  ], tags:[], links:["smith","feud"]},
+ commons:{zone:"N", name:"Commons, Gemeinwohl­ökonomie, solidarische Ökonomie", who:"neue Ansätze", years:"", short:"Antworten auf die Folgen heutiger Wirtschaftspolitik",
+  intro:"Neue Überlegungen außerhalb der traditionellen Wirtschaftswissenschaften.",
+  core:"Sie versuchen, Antworten auf die negativen Auswirkungen der gegenwärtigen Wirtschaftspolitik zu geben.",
+  sections:[
+   ["Was das Buch dazu sagt","Euer Buch nennt die Theorie der Commons, die Gemeinwohlökonomie und die solidarische Ökonomie als Beispiele, erklärt sie aber nicht genauer. Die Commons stehen auch in der Mitte der Übersichtsgrafik (Abb. 26.1)."]
+  ], tags:["Commons"], links:["schrumpf","fem"]},
+ schrumpf:{zone:"N", name:"Schrumpfungs­ökonomie", who:"neuer Ansatz", years:"", short:"Nullwachstum",
+  intro:"Ein alternativer Theorieansatz.",
+  core:"Die Wirtschaft soll nicht mehr wachsen (Nullwachstum), um Umwelt und Rohstoffvorkommen zu schonen.",
+  sections:[], tags:[], links:["commons","fem"]},
+ fem:{zone:"N", name:"Feministische Ökonomie", who:"neuer Ansatz", years:"", short:"Unbezahlte Arbeit sichtbar machen",
+  intro:"Ein alternativer Theorieansatz.",
+  core:"Sie kritisiert männliche Wert- und Weltvorstellungen in der Wirtschaft und rückt die unbezahlte Arbeit ins Zentrum.",
+  sections:[
+   ["Menschenbild","Sie lehnt den <b>homo oeconomicus</b> als angeblich freies und unabhängiges Wesen ab."],
+   ["Kernaussagen",["Geschlecht und Geschlechterverhältnisse sollen auch in der Wirtschaft Thema werden und sichtbar sein.","Sie will verstehen, welche wirtschaftlichen Nachteile Frauen haben.","Sie fordert eine andere Wirtschaftswissenschaft und eine andere Wirtschaftspolitik.","Zentral ist die <mark>unbezahlte Arbeit</mark>, etwa Hausarbeit oder Pflege im Privatbereich, die vor allem Frauen leisten."]]
+  ], tags:[], links:["commons","schrumpf","smith"], unpaid:true}
+};
+const ORDER = {A:["smith","manchester","hayek","friedman"], B:["keynes"], C:["marx"], P:["feud","merk"], N:["commons","schrumpf","fem"]};
+const ZONE = {A:"Der Markt regelt", B:"Der Staat steuert mit", C:"Der Staat plant", P:"Davor", N:"Neue Ansätze"};
+const UNPAID = [
+ ["0–1 Std.","Norwegen, Schweden"],
+ ["1–2 Std.","Deutschland, Frankreich, Vereinigtes Königreich"],
+ ["2–3 Std.","Österreich, Italien, Spanien, Polen", true],
+ ["3–4 Std.","Portugal, Türkei"]
+];
+
+/* ================= Helfer ================= */
+const $ = s => document.querySelector(s);
+const NS = "http://www.w3.org/2000/svg";
+function el(tag, attrs={}, parent){ const e=document.createElementNS(NS,tag); for(const k in attrs) e.setAttribute(k,attrs[k]); if(parent) parent.appendChild(e); return e; }
+function say(t){ const l=$("#live"); l.textContent=""; setTimeout(()=>{ l.textContent=t; },30); }
+function focusHeading(box){ const h=box.querySelector("h2,.pair,.quote"); if(h){ h.setAttribute("tabindex","-1"); h.focus({preventScroll:true}); } }
+function plain(s){ return s.replace(/­/g,""); }
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const store = { get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }, set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} } };
+
+/* ================= Theme & Beamer ================= */
+const root=document.documentElement;
+$("#themeBtn").addEventListener("click",()=>{
+  const cur=root.getAttribute("data-theme");
+  const isDark = cur==="dark" || (cur!=="light" && !matchMedia("(prefers-color-scheme: light)").matches);
+  root.setAttribute("data-theme", isDark ? "light" : "dark");
+  store.set("wt-theme", root.getAttribute("data-theme"));
+});
+{ const t=store.get("wt-theme"); if(t==="light"||t==="dark") root.setAttribute("data-theme",t); }
+$("#beamerBtn").addEventListener("click",()=>{
+  const on = root.getAttribute("data-mode")!=="beamer";
+  if(on){ root.setAttribute("data-mode","beamer"); try{ const p=root.requestFullscreen&&root.requestFullscreen(); if(p&&p.catch) p.catch(()=>{}); }catch(e){} }
+  else { root.removeAttribute("data-mode"); try{ if(document.fullscreenElement){ const p=document.exitFullscreen(); if(p&&p.catch) p.catch(()=>{}); } }catch(e){} }
+  $("#beamerBtn").setAttribute("aria-pressed",on);
+});
+
+/* ================= Tabs ================= */
+const tabs=[...document.querySelectorAll('[role="tab"]')];
+const HASH={"tab-start":"start","tab-karte":"theorien","tab-zeit":"zeitleiste","tab-duell":"duell","tab-test":"selbsttest"};
+let curTab="tab-start";
+function showTab(id, focus){
+  curTab=id;
+  tabs.forEach(t=>{ const on=t.id===id; t.setAttribute("aria-selected",on); t.tabIndex=on?0:-1; document.getElementById(t.getAttribute("aria-controls")).hidden=!on; });
+  if(id==="tab-zeit" && typeof drawTL==="function" && typeof P!=="undefined"){ drawTL(); renderTL(); }
+  if(id==="tab-duell" && typeof drawCycle==="function" && typeof cy!=="undefined") drawCycle();
+  if(focus) document.getElementById(id).focus();
+  store.set("wt-tab", id);
+  try{ history.replaceState(null,"","#"+HASH[id]); }catch(e){}
+}
+tabs.forEach((t,i)=>{
+  t.addEventListener("click",()=>showTab(t.id));
+  t.addEventListener("keydown",e=>{
+    let j=null;
+    if(e.key==="ArrowRight") j=(i+1)%tabs.length; else if(e.key==="ArrowLeft") j=(i-1+tabs.length)%tabs.length;
+    else if(e.key==="Home") j=0; else if(e.key==="End") j=tabs.length-1;
+    if(j!==null){ e.preventDefault(); showTab(tabs[j].id,true); }
+  });
+});
+document.querySelectorAll("[data-goto]").forEach(b=>b.addEventListener("click",()=>{ showTab(b.dataset.goto,true); window.scrollTo({top:0,behavior:reduceMotion?"auto":"smooth"}); }));
+window.addEventListener("hashchange",()=>{ const h=(location.hash||"").slice(1); const k=Object.keys(HASH).find(x=>HASH[x]===h); if(k&&k!==curTab) showTab(k); });
+
+/* ================= 1: Regler ================= */
+const you=$("#you");
+function youZone(v){ return v<50 ? "A" : (v<75 ? "B" : "C"); }
+let youSet=false;
+function renderYou(save){
+  const v=+you.value;
+  if(save){ youSet=true; store.set("wt-you", String(v)); }
+  $("#youMark").hidden=!youSet;
+  if(!youSet){ $("#youTxt").textContent="Schiebt den Regler dorthin, wo ihr gerade steht. Es gibt kein Richtig oder Falsch."; return; }
+  const z=youZone(v);
+  const near = {A:"Dort liegen Liberalismus, Manchesterliberalismus, Neoliberalismus und Monetarismus.", B:"Dort liegt der Keynesianismus.", C:"Dort liegt der Marxismus."}[z];
+  $("#youTxt").innerHTML = 'Euer Regler steht im Feld <b>„'+ZONE[z]+'“</b>. '+near;
+  $("#youMark").style.left = v+"%";
+  you.setAttribute("aria-valuetext", v+" von 100, Feld „"+ZONE[z]+"“");
+}
+{ const s=store.get("wt-you"); if(s!==null && s!=="" && !isNaN(+s)){ you.value=s; youSet=true; } }
+you.addEventListener("input",()=>renderYou(true));
+renderYou();
+
+/* ================= 2: Theorien ================= */
+let sel=null;
+const cardEls={};
+for(const z in ORDER){
+  const box = document.querySelector('[data-zone="'+z+'"]');
+  ORDER[z].forEach(id=>{
+    const t=T[id];
+    const b=document.createElement("button");
+    b.type="button"; b.className="tcard"; b.setAttribute("aria-pressed","false");
+    b.innerHTML=(t.flag?'<em>'+t.flag+'</em>':'')+'<b>'+t.name+'</b><span>'+t.who+(t.years?' · '+t.years:'')+'</span>';
+    b.setAttribute("aria-label", plain(t.name)+", "+t.who+(t.years?" "+t.years:"")+", Feld: "+ZONE[t.zone]);
+    b.addEventListener("click",()=>{ select(sel===id?null:id, true); });
+    box.appendChild(b); cardEls[id]=b;
+  });
+}
+function secHtml([h,c]){
+  return '<h3>'+h+'</h3>'+(Array.isArray(c) ? '<ul class="list">'+c.map(x=>'<li>'+x+'</li>').join("")+'</ul>' : '<p>'+c+'</p>');
+}
+function select(id, focus){
+  sel=id;
+  Object.entries(cardEls).forEach(([k,b])=>b.setAttribute("aria-pressed",k===id));
+  const box=$("#info");
+  if(!id){
+    box.innerHTML='<p class="eyebrow">So funktioniert’s</p><h2>Klickt auf eine Theorie</h2>'+
+      '<p>Die Theorien sind danach geordnet, wie stark der Staat in die Wirtschaft eingreifen soll: links wenig, rechts viel. Klickt auf eine Karte, dann erscheint hier ihr Steckbrief.</p>'+
+      '<h3>Die drei Felder</h3><ul class="list">'+
+      '<li><b>Der Markt regelt:</b> Angebot und Nachfrage sollen fast alles regeln.</li>'+
+      '<li><b>Der Staat steuert mit:</b> Der Markt bleibt, aber der Staat greift aktiv ein, vor allem in Krisen.</li>'+
+      '<li><b>Der Staat plant:</b> Statt des Marktes plant der Staat die Wirtschaft.</li></ul>'+
+      '<h3>Außerhalb der Felder</h3><p><b>Davor</b> stehen zwei ältere Systeme, gegen die Adam Smith schrieb. Die <b>neuen Ansätze</b> fragen nach den Folgen der heutigen Wirtschaftspolitik, etwa für Umwelt oder Frauen.</p>'+
+      '<p class="note">Die Markierung „Ihr“ über den Feldern zeigt euren Regler aus Bereich 1.</p>';
+    if(focus) focusHeading(box);
+    return;
+  }
+  const t=T[id];
+  let h='<p class="back"><button class="btn" type="button" data-back>← Übersicht</button></p>'+
+    '<p class="eyebrow">'+ZONE[t.zone]+'</p><h2>'+t.name+'</h2>'+
+    '<p class="who">'+t.who+(t.years?' <span>('+t.years+')</span>':'')+'</p><p>'+t.intro+'</p>'+
+    '<p class="core">'+t.core+'</p>'+t.sections.map(secHtml).join("");
+  if(t.unpaid){
+    h+='<h3>Zahlen dazu (Abb. 26.2, OECD 2021)</h3><p>So viele Stunden pro Tag haben Frauen 2021 mehr unbezahlte Arbeit im Haushalt geleistet als Männer:</p><div class="unpaid">'+
+      UNPAID.map(([a,b,at])=>'<div class="urow'+(at?' at':'')+'"><b>'+a+'</b><span>'+b+'</span></div>').join("")+'</div><p class="note">Auswahl aus der Karte im Buch (Abb. 26.2).</p>';
+  }
+  if(t.tags.length) h+='<h3>Schlagworte aus der Grafik (Abb. 26.1)</h3><div class="tags">'+t.tags.map(x=>'<span class="tag">'+x+'</span>').join("")+'</div>';
+  if(t.links.length) h+='<h3>Hängt zusammen mit</h3><div class="links">'+t.links.map(k=>'<button class="btn" type="button" data-sel="'+k+'">'+T[k].name+'</button>').join("")+'</div>';
+  box.innerHTML=h;
+  box.querySelector("[data-back]").addEventListener("click",()=>{ const prev=sel; select(null,true); if(prev&&cardEls[prev]) cardEls[prev].focus(); });
+  box.querySelectorAll("[data-sel]").forEach(b=>b.addEventListener("click",()=>select(b.dataset.sel,true)));
+  if(window.matchMedia("(max-width:1279px)").matches) box.scrollIntoView({behavior:reduceMotion?"auto":"smooth",block:"start"});
+  if(focus) focusHeading(box);
+}
+select(null);
+document.addEventListener("keydown",e=>{ if(e.key==="Escape" && curTab==="tab-karte" && sel){ const prev=sel; select(null); cardEls[prev].focus(); } });
+
+/* ================= 3: Zeitleiste ================= */
+const P = [
+ {id:"smith", n:"Adam Smith", s:1723, e:1790, th:"Liberalismus", txt:"Er schrieb, als der Liberalismus aufkam, und wandte sich gegen Feudalismus und Merkantilismus."},
+ {id:"marx", n:"Karl Marx", s:1818, e:1883, th:"Marxismus / Kommunismus", txt:"Er lebte im 19. Jahrhundert, also in der Zeit des Manchesterliberalismus. Die Lage der Arbeiter:innen damals wurde zur Grundlage für sozialistische und kommunistische Ideen."},
+ {id:"keynes", n:"John Maynard Keynes", s:1883, e:1946, th:"Keynesianismus", txt:"Er erlebte die Weltwirtschaftskrise von 1929. Den klassischen Liberalismus, der sie laut Buch mitbefördert hatte, kritisierte er scharf."},
+ {id:"hayek", n:"Friedrich A. von Hayek", s:1899, e:1992, th:"Neoliberalismus", txt:"In der Übersichtsgrafik des Buches steht er für den Neoliberalismus, der laut Buch heute die meisten westlichen Wirtschaftsordnungen prägt."},
+ {id:"friedman", n:"Milton Friedman", s:1912, e:2006, th:"Monetarismus", txt:"Er entwickelte den Monetarismus und gilt im Buch als Gegenspieler von Keynes."}
+];
+const Y0=1700, Y1=2030;
+let TW=1000, X0=40, X1=980;
+const yx = y => X0 + (y-Y0)/(Y1-Y0)*(X1-X0);
+const tl=$("#tl");
+let tlSel=null;
+function drawTL(){
+  TW = tl.parentElement.clientWidth < 640 ? 560 : 800; X1 = TW-20;
+  tl.setAttribute("viewBox","0 0 "+TW+" 520");
+  tl.innerHTML="";
+  el("rect",{x:yx(1801),y:20,width:yx(1900)-yx(1801),height:440,class:"tl-band"},tl);
+  const bt=el("text",{x:yx(1850),y:44,"text-anchor":"middle",class:"tl-bandtxt"},tl); bt.textContent="19. Jahrhundert:";
+  const bt2=el("text",{x:yx(1850),y:64,"text-anchor":"middle",class:"tl-bandtxt"},tl); bt2.textContent="Manchesterliberalismus";
+  el("line",{x1:X0,y1:470,x2:X1,y2:470,class:"tl-axis"},tl);
+  for(let y=1700;y<=2025;y+=50){ el("line",{x1:yx(y),y1:464,x2:yx(y),y2:476,class:"tl-axis"},tl); const t=el("text",{x:yx(y),y:500,"text-anchor":"middle",class:"tl-tick"},tl); t.textContent=y; }
+  el("line",{x1:yx(1929),y1:84,x2:yx(1929),y2:470,class:"tl-line"},tl);
+  const wl = yx(1929)+8+250 < TW;
+  const w1=el("text",{x: wl ? yx(1929)+8 : yx(1929)-8, y:100, "text-anchor": wl?"start":"end", class:"tl-linetxt"},tl); w1.textContent="1929 Weltwirtschaftskrise";
+  P.forEach((p,i)=>{
+    const y=126+i*66, x=yx(p.s), w=yx(p.e)-yx(p.s);
+    const g=el("g",{class:"life",tabindex:"0",role:"button","aria-pressed":"false","aria-label":p.n+", "+p.s+" bis "+p.e+", "+p.th},tl);
+    el("rect",{x:x-6,y:y-30,width:w+12,height:64,class:"hit"},g);
+    el("rect",{x,y:y-14,width:w,height:30,rx:4,class:"b"},g);
+    const right = x+w+10+p.n.length*13 < TW-6;
+    const nm=el("text",{x: right ? x+w+10 : x-10, y:y+7, "text-anchor": right?"start":"end"},g); nm.textContent=p.n;
+    const yr=el("text",{x:x+w/2,y:y+6,"text-anchor":"middle",class:"y in"},g); yr.textContent=p.s+"–"+p.e;
+    const act=()=>{ tlSel = tlSel===i ? null : i; renderTL(true); };
+    g.addEventListener("click",act);
+    g.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); act(); } });
+    p.g=g;
+  });
+}
+drawTL();
+function overlap(a,b){ return a.s<=b.e && b.s<=a.e; }
+function renderTL(focus){
+  P.forEach((p,i)=>{
+    let c="life";
+    if(tlSel!=null){ if(i===tlSel) c+=" sel"; else if(overlap(p,P[tlSel])) c+=" same"; else c+=" dim"; }
+    p.g.setAttribute("class",c); p.g.setAttribute("aria-pressed", i===tlSel);
+  });
+  const box=$("#tlInfo");
+  if(tlSel==null){
+    box.innerHTML='<p class="eyebrow">Zeitleiste</p><h2>Fünf Köpfe, fast 300 Jahre</h2>'+
+      '<p>Die Balken zeigen, wann die fünf Ökonomen gelebt haben. Klickt auf einen Balken: Dann seht ihr, wer zur selben Zeit gelebt hat.</p>'+
+      '<h3>Davor</h3><p><b>Feudalismus</b> (Mittelalter) und <b>Merkantilismus</b> (Zeit des Absolutismus): gegen diese Systeme schrieb Adam Smith.</p>'+
+      '<h3>Heute</h3><p>Laut Buch beruhen die meisten Wirtschaftsordnungen der westlichen Industrieländer auf dem Neoliberalismus.</p>'+
+      '<p class="note">Jahreszahlen aus dem Schulbuch. Zwischen Smiths Geburt (1723) und Friedmans Tod (2006) liegen 283 Jahre.</p>';
+    if(focus) focusHeading(box);
+    return;
+  }
+  const p=P[tlSel];
+  const same=P.filter((q,j)=>j!==tlSel && overlap(p,q));
+  const sameTxt = same.length ? same.map(q=>{
+      if(q.e===p.s) return q.n+' (starb '+q.e+', im Geburtsjahr von '+p.n.split(" ").pop()+')';
+      if(p.e===q.s) return q.n+' (geboren '+q.s+', im Todesjahr von '+p.n.split(" ").pop()+')';
+      return q.n+' ('+q.s+'–'+q.e+')';
+    }).join(", ") : "keine der anderen vier Personen";
+  box.innerHTML='<p class="back"><button class="btn" type="button" id="tlBack">← Übersicht</button></p>'+
+    '<p class="eyebrow">'+p.th+'</p><h2>'+p.n+'</h2><p class="who">'+p.s+'–'+p.e+'</p><p>'+p.txt+'</p>'+
+    '<h3>Zur selben Zeit am Leben</h3><p>'+sameTxt+'</p>'+
+    '<p><button class="btn" type="button" id="tlTheory">Steckbrief: '+p.th+' →</button></p>';
+  $("#tlBack").addEventListener("click",()=>{ const g=P[tlSel].g; tlSel=null; renderTL(); g.focus(); });
+  $("#tlTheory").addEventListener("click",()=>{ showTab("tab-karte"); select(p.id,true); });
+  if(focus) focusHeading(box);
+}
+renderTL();
+
+/* ================= 4: Duell ================= */
+const ROUNDS = [
+ {t:"Gleichgewicht oder nicht?", k:"Märkte können im <b>Ungleichgewicht</b> steckenbleiben. Wirtschaft ist instabil. Gerade in Krisen findet die freie Marktwirtschaft nicht von selbst zurück.", f:"Der Markt ist ein System, das sich <b>selbst reguliert</b>. Durch Angebot und Nachfrage findet er ins Gleichgewicht."},
+ {t:"Was soll der Staat tun?", k:"Mit seinem Budget <b>aktiv steuernd eingreifen</b> (Staatsinterventionen).", f:"Nur Privateigentum schützen und für Wettbewerb sorgen. Staatliche Eingriffe sind <b>nicht notwendig</b>, sie gelten sogar als Ursache für Marktversagen."},
+ {t:"Angebot oder Nachfrage?", k:"Die <b>Nachfrage</b> bestimmt das Angebot, nicht umgekehrt. Entscheidend ist die Kaufkraft (Nachfragepolitik).", f:"Er setzt auf das <b>Angebot</b>: Unternehmen brauchen viel wirtschaftliche Freiheit (regelgebundene Angebotspolitik)."},
+ {t:"Was hilft der Wirtschaft?", k:"In der Rezession gibt der Staat <b>mehr aus</b>, auch auf Schulden, und kurbelt so Konsum und Investitionen an (deficit spending).", f:"<b>Niedrigere Unternehmenssteuern</b> und viel Freiheit für Unternehmen. Die meisten Ziele regelt der Markt von selbst."},
+ {t:"Geld und Preise", k:"Keynes lenkt die Wirtschaft über das <b>Budget</b>, also über die Staatsausgaben. Eine seiner Positionen: Die Geldwirtschaft funktioniert nicht wie die Tauschwirtschaft.", f:"Nur die <b>Geldmenge</b> steuern Staat bzw. Zentralbank, nach festen Regeln. Ziel: stabile Preise (Preisstabilität)."}
+];
+const open=new Set();
+const rbox=$("#rounds");
+function renderRounds(){
+  rbox.innerHTML=ROUNDS.map((r,i)=>{
+    const o=open.has(i);
+    return '<div class="round"><button type="button" aria-expanded="'+o+'" aria-controls="rd'+i+'" data-r="'+i+'"><b>Runde '+(i+1)+': '+r.t+'</b><span>'+(o?'zudecken':'aufdecken')+'</span></button>'+
+      '<div class="sides" id="rd'+i+'"'+(o?'':' hidden')+'><div><small>Keynes</small>'+r.k+'</div><div><small>Friedman</small>'+r.f+'</div></div></div>';
+  }).join("");
+  rbox.querySelectorAll("[data-r]").forEach(b=>b.addEventListener("click",()=>{ const i=+b.dataset.r; open.has(i)?open.delete(i):open.add(i); renderRounds(); rbox.querySelector('[data-r="'+i+'"]').focus(); }));
+}
+$("#openAll").addEventListener("click",()=>{ ROUNDS.forEach((r,i)=>open.add(i)); renderRounds(); say("Alle Runden aufgedeckt"); });
+$("#closeAll").addEventListener("click",()=>{ open.clear(); renderRounds(); say("Alle Runden zugedeckt"); });
+renderRounds();
+
+/* Konjunkturkurve */
+const cy=$("#cycle");
+let cyOn=false;
+let CW=640, CX0=60, CX1=620;
+const MID=140, AMP=90, DAMP=0.45;
+function wave(a){ let d=""; const n=140; for(let k=0;k<=n;k++){ const x=CX0+(CX1-CX0)*k/n; const ph=k/n*4*Math.PI; const y=MID - a*Math.sin(ph); d+=(k?"L":"M")+x.toFixed(1)+" "+y.toFixed(1)+" "; } return d; }
+function xAt(ph){ return CX0 + ph/(4*Math.PI)*(CX1-CX0); }
+function drawCycle(){
+  const pw=cy.parentElement.clientWidth;
+  CW = pw && pw < 520 ? 440 : 640; CX0=56; CX1=CW-20;
+  cy.setAttribute("viewBox","0 0 "+CW+" 405");
+  cy.querySelectorAll(":scope > :not(title)").forEach(n=>n.remove());
+  el("line",{x1:CX0,y1:MID,x2:CX1,y2:MID,class:"cy-zero"},cy);
+  el("line",{x1:CX0,y1:22,x2:CX0,y2:262,class:"cy-axis"},cy);
+  el("line",{x1:CX0,y1:262,x2:CX1,y2:262,class:"cy-axis"},cy);
+  const ya=el("text",{x:CX0+6,y:16,class:"cy-small"},cy); ya.textContent="Wirtschaftsleistung";
+  const xa=el("text",{x:CX1,y:279,"text-anchor":"end",class:"cy-small"},cy); xa.textContent="Zeit →";
+  if(cyOn){ el("path",{d:wave(AMP),class:"cy-ghost"},cy); }
+  el("path",{d:wave(cyOn?AMP*DAMP:AMP),class:"cy-wave"},cy);
+  const peaks=[Math.PI/2, 2.5*Math.PI], troughs=[1.5*Math.PI, 3.5*Math.PI];
+  peaks.forEach(ph=>{ const t=el("text",{x:xAt(ph),y:MID-AMP-12,"text-anchor":"middle",class:"cy-lbl"},cy); t.textContent="Hochkonjunktur"; });
+  troughs.forEach(ph=>{ const t=el("text",{x:xAt(ph),y:MID+AMP+22,"text-anchor":"middle",class:"cy-lbl"},cy); t.textContent="Rezession"; });
+  const base=340;
+  el("line",{x1:CX0,y1:base,x2:CX1,y2:base,class:"cy-zero"},cy);
+  const st=el("text",{x:CX0-8,y:base+5,"text-anchor":"end",class:"cy-small"},cy); st.textContent="Staat";
+  if(cyOn){
+    troughs.forEach(ph=>{ el("rect",{x:xAt(ph)-30,y:base-32,width:60,height:32,class:"cy-up"},cy); const t=el("text",{x:xAt(ph),y:base-42,"text-anchor":"middle",class:"cy-small"},cy); t.textContent="mehr ausgeben"; });
+    peaks.forEach(ph=>{ el("rect",{x:xAt(ph)-30,y:base,width:60,height:32,class:"cy-down"},cy); const t=el("text",{x:xAt(ph),y:base+52,"text-anchor":"middle",class:"cy-small"},cy); t.textContent="Schulden abbauen"; });
+  } else {
+    const t=el("text",{x:(CX0+CX1)/2,y:base-10,"text-anchor":"middle",class:"cy-small"},cy); t.textContent="greift nicht ein";
+  }
+  $("#cyOff").setAttribute("aria-pressed",!cyOn); $("#cyOn").setAttribute("aria-pressed",cyOn);
+  $("#cyText").innerHTML = cyOn
+    ? '<p><b>Rezession:</b> Konsum und Investitionen sind zu schwach. Der Staat gibt mehr aus, auch auf Schulden (<mark>deficit spending</mark>), und kurbelt die Wirtschaft an.</p><p><b>Hochkonjunktur:</b> Der Staat baut die Schulden wieder ab.</p><p>Der Staat handelt also immer <b>gegen</b> den Konjunkturzyklus, daher der Name <b>antizyklisch</b>. Die Schwankungen werden geringer (durchgezogene Linie). Das Buch nennt das auch Stop- und Go-Politik.</p>'
+    : '<p>Die Wirtschaft läuft nicht gleichmäßig. Auf eine <b>Hochkonjunktur</b>, in der die Wirtschaft auf Hochtouren läuft, folgt eine <b>Rezession</b>, in der sie schwächelt. Nach Keynes findet sie in der Krise nicht von selbst wieder heraus.</p><p>Schaltet oben auf „Mit antizyklischer Politik“.</p>';
+}
+$("#cyOff").addEventListener("click",()=>{ cyOn=false; drawCycle(); say("Ohne Eingriff"); });
+$("#cyOn").addEventListener("click",()=>{ cyOn=true; drawCycle(); say("Mit antizyklischer Politik: Die Schwankungen werden geringer."); });
+drawCycle();
+
+/* ================= 5: Selbsttest ================= */
+const L = {smith:"Liberalismus (Smith)", marx:"Marxismus (Marx)", keynes:"Keynesianismus (Keynes)", friedman:"Monetarismus (Friedman)", hayek:"Neoliberalismus (Hayek)", fem:"Feministische Ökonomie", schrumpf:"Schrumpfungsökonomie", manchester:"Manchesterliberalismus", merk:"Merkantilismus"};
+function aq(text, correct, others, explain){ return {type:"aussage", q:text, opts:[correct,...others].map(k=>[k,L[k]]), correct, explain}; }
+function mq(q, opts, correct, explain){ return {type:"mc", q, opts, correct, explain}; }
+const QUIZ = [
+ aq("Der Staat soll sich auf wenige Bereiche wie Justiz und Verkehr beschränken. Den Rest regelt das freie Spiel von Angebot und Nachfrage.","smith",["keynes","marx","fem"],"Das ist Adam Smiths Wirtschaftsliberalismus: freier Wettbewerb, der Staat greift nur in wenigen Bereichen ein."),
+ mq("Was bedeutete das griechische Wort Oikos?",[["a","Marktplatz"],["b","Haushalts- und Wirtschaftsgemeinschaft"],["c","Staatskasse"],["d","Anschauung, Betrachtung"]],"b","Oikos war die Haushalts- und Wirtschaftsgemeinschaft. Ökonomie heißt ursprünglich Haushaltslehre. „Anschauung“ ist die Bedeutung von Theorie."),
+ aq("Die Produktionsmittel sollen der Gesellschaft gehören. Statt des Marktes plant der Staat die Wirtschaft, Ziel ist die Bedarfsdeckung.","marx",["hayek","friedman","smith"],"Das ist Marx’ Lösung: Vergesellschaftung der Produktionsmittel, staatliche Planung statt Markt, Bedarfsdeckung statt Profitmaximierung."),
+ aq("In der Rezession muss der Staat mehr ausgeben, auch auf Schulden. In der Hochkonjunktur baut er die Schulden wieder ab.","keynes",["friedman","smith","manchester"],"Das ist Keynes’ antizyklische Wirtschaftspolitik mit deficit spending in der Krise."),
+ mq("Was versteht man unter deficit spending?",[["a","Der Staat senkt die Unternehmenssteuern."],["b","Die Zentralbank verringert die Geldmenge."],["c","Der Staat kurbelt in der Krise mit Ausgaben auf Schulden Konsum und Investitionen an."],["d","Der Staat spart in der Krise besonders stark."]],"c","Deficit spending heißt: Der Staat gibt in der Rezession mehr aus, als er einnimmt, um die Wirtschaft anzukurbeln. Die Staatsverschuldung steigt."),
+ aq("Der Markt reguliert sich selbst. Der Staat steuert nur die Geldmenge nach festen Regeln, damit die Preise stabil bleiben.","friedman",["keynes","marx","schrumpf"],"Das ist Friedmans Monetarismus: Staatliche Eingriffe sind nicht nötig, nur die Geldmenge wird regelgebunden gesteuert."),
+ mq("Was warf Keynes laut Buch dem klassischen Liberalismus vor?",[["a","Er habe zu viele staatliche Eingriffe verlangt."],["b","Er habe die Weltwirtschaftskrise von 1929 mitbefördert."],["c","Er habe die Geldmenge nicht stabil gehalten."],["d","Er habe die Umwelt zu wenig geschont."]],"b","Keynes kritisierte vor allem den klassischen Liberalismus, der die Weltwirtschaftskrise von 1929 mitbefördert hatte."),
+ aq("Der Markt regelt im Zweifel alles. Ein schlanker Staat sorgt für Liberalisierung, Deregulierung und Privatisierung.","hayek",["keynes","marx","merk"],"Das ist der Neoliberalismus. In der Übersichtsgrafik des Buches steht Hayek dafür."),
+ mq("Welcher Begriff gehört zu Adam Smith?",[["a","die unsichtbare Hand"],["b","deficit spending"],["c","klassenlose Gesellschaft"],["d","Nullwachstum"]],"a","Laut Smith entsteht „wie von einer unsichtbaren Hand gesteuert“ ein Gleichgewicht zwischen Produktion und Konsum, Löhnen und Preisen."),
+ aq("Das Bild vom homo oeconomicus als freiem, unabhängigem Wesen lehnen wir ab. Unbezahlte Arbeit wie Hausarbeit und Pflege, die vor allem Frauen leisten, gehört ins Zentrum.","fem",["smith","friedman","schrumpf"],"Das ist die feministische Ökonomie. Sie kritisiert männliche Wert- und Weltvorstellungen in der Wirtschaft."),
+ aq("Die Wirtschaft soll nicht mehr wachsen. Nullwachstum schont Umwelt und Rohstoffe.","schrumpf",["friedman","keynes","smith"],"Das ist die Schrumpfungsökonomie, einer der neuen Ansätze."),
+ mq("Auf welcher Theorie beruhen laut eurem Schulbuch heute die meisten Wirtschaftsordnungen der westlichen Industrieländer?",[["a","Keynesianismus"],["b","Marxismus"],["c","Neoliberalismus"],["d","Merkantilismus"]],"c","Laut Buch beruhen die meisten westlichen Wirtschaftsordnungen heute auf den Prinzipien des Neoliberalismus.")
+];
+let qi=0, score=0, answered=false;
+function renderQuiz(focus){
+  const box=$("#quiz");
+  if(qi>=QUIZ.length){
+    box.innerHTML='<p class="eyebrow">Geschafft</p><p class="pair">'+score+' von '+QUIZ.length+' richtig</p><p>'+(score>=9?'Stark. Ihr habt einen guten Überblick über die Theorien.':'Schaut euch die Steckbriefe im Bereich „Die Theorien“ noch einmal an und startet den Test dann neu.')+'</p>'+
+      '<p><button class="btn" type="button" id="qAgain">Test neu starten</button></p>';
+    $("#qAgain").addEventListener("click",()=>{ qi=0; score=0; renderQuiz(true); });
+    if(focus) focusHeading(box);
+    return;
+  }
+  const it=QUIZ[qi]; answered=false;
+  box.innerHTML='<p class="progress">Frage '+(qi+1)+' von '+QUIZ.length+' · '+score+' richtig</p>'+
+    '<p class="eyebrow">'+(it.type==="aussage"?'Welche Theorie steckt hinter dieser Aussage?':'Wählt die richtige Antwort')+'</p>'+
+    (it.type==="aussage" ? '<p class="quote">„'+it.q+'“</p>' : '<p class="pair">'+it.q+'</p>')+
+    '<div class="answers">'+it.opts.map(([k,l])=>'<button type="button" data-k="'+k+'">'+l+'</button>').join("")+'</div><div id="qFeed"></div>';
+  box.querySelectorAll(".answers button").forEach(b=>b.addEventListener("click",()=>{
+    if(answered) return; answered=true;
+    const ok=b.dataset.k===it.correct; if(ok) score++;
+    box.querySelectorAll(".answers button").forEach(x=>{ x.disabled=true; if(x.dataset.k===it.correct) x.classList.add("right"); else if(x===b) x.classList.add("wrong"); });
+    const corr=it.opts.find(o=>o[0]===it.correct)[1];
+    $("#qFeed").innerHTML='<p class="feedtitle '+(ok?'ok':'no')+'">'+(ok?'✓ Richtig':'✗ Nicht ganz, richtig ist: '+corr)+'</p><p>'+it.explain+'</p><p><button class="btn" type="button" id="qNext">'+(qi<QUIZ.length-1?'Nächste Frage →':'Ergebnis anzeigen')+'</button></p>';
+    say(ok?"Richtig":"Nicht ganz, richtig ist: "+corr);
+    const nx=$("#qNext"); nx.addEventListener("click",()=>{ qi++; renderQuiz(true); }); nx.focus();
+  }));
+  if(focus){ const f=box.querySelector(".answers button"); if(f) f.focus(); }
+}
+/* Antwortreihenfolge mischen, aber fest (damit alle dieselbe Reihenfolge sehen) */
+QUIZ.forEach((it,i)=>{ if(it.type==="aussage"){ const r=[...it.opts]; const shift=(i*3+1)%r.length; it.opts=r.slice(shift).concat(r.slice(0,shift)); } });
+renderQuiz();
+
+/* ================= Clicker (PageUp/PageDown) ================= */
+document.addEventListener("keydown",e=>{
+  if(!["PageDown","PageUp"].includes(e.key)) return;
+  const fwd=e.key==="PageDown";
+  if(curTab==="tab-zeit"){ e.preventDefault(); tlSel = tlSel==null ? (fwd?0:P.length-1) : (tlSel+(fwd?1:P.length-1))%P.length; renderTL(); say(P[tlSel].n); }
+  else if(curTab==="tab-duell"){ e.preventDefault(); if(fwd){ const n=ROUNDS.findIndex((r,i)=>!open.has(i)); if(n>=0){ open.add(n); renderRounds(); say("Runde "+(n+1)); } } else { const arr=[...open].sort((a,b)=>a-b); if(arr.length){ open.delete(arr[arr.length-1]); renderRounds(); } } }
+  else if(curTab==="tab-test"){ const nx=$("#qNext"); if(nx&&fwd){ e.preventDefault(); nx.click(); } }
+});
+
+/* ================= Größe ================= */
+let rT=null;
+window.addEventListener("resize",()=>{ clearTimeout(rT); rT=setTimeout(()=>{ if(curTab==="tab-zeit"){ drawTL(); renderTL(); } if(curTab==="tab-duell") drawCycle(); },150); });
+
+/* ================= Start ================= */
+(function(){
+  const h=(location.hash||"").replace("#","");
+  let start=Object.keys(HASH).find(k=>HASH[k]===h);
+  if(!start){ const t=store.get("wt-tab"); if(t && document.getElementById(t)) start=t; }
+  showTab(start||"tab-start");
+})();
+</script>
+</body>
+</html>
